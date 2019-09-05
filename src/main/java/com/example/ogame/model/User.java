@@ -1,5 +1,7 @@
 package com.example.ogame.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
 public class User {
@@ -9,10 +11,10 @@ public class User {
     private final String password;
     private final String email;
 
-    public User(UUID user_id,
-                String username,
-                String password,
-                String email) {
+    public User(@JsonProperty("user_id") UUID user_id,
+                @JsonProperty("username") String username,
+                @JsonProperty("password") String password,
+                @JsonProperty("email") String email) {
 
         this.user_id = user_id;
         this.username = username;

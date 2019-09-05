@@ -36,4 +36,32 @@ public class DataAccessService {
             return new User(user_id, username, password, email);
         };
     }
+
+    public void insertUser(UUID user_id, User newUser) {
+
+        final String sql = "INSERT INTO users (user_id, username, password, email) VALUES (?, ?, ?, ?)";
+
+        jdbcTemplate.update(
+                sql,
+                user_id,
+                newUser.getUsername(),
+                newUser.getPassword(),
+                newUser.getEmail());
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

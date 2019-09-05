@@ -28,9 +28,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-//    @RequestMapping(method = RequestMethod.POST)
-//    public void createNewUser(@RequestBody @Valid User newUser) {
-//        userService.createNewUser(newUser);
-//    }
+    @RequestMapping(method = RequestMethod.POST)
+    public void createNewUser(@RequestBody @Valid User newUser) {
+        userService.createNewUser(newUser);
+    }
 
 }
