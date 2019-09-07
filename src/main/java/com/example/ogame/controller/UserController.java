@@ -4,16 +4,13 @@ import com.example.ogame.model.User;
 import com.example.ogame.service.UserService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api-user")
 public class UserController {
 
     private final UserService userService;
@@ -31,6 +28,16 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST)
     public void createNewUser(@RequestBody @Valid User newUser) {
         userService.createNewUser(newUser);
+    }
+
+    @RequestMapping(
+            path = "/{username}/{password}",
+            method = RequestMethod.GET
+    )
+    public User loginUserByUsernamePassword(
+            @PathVariable String username,
+            @PathVariable String password) {
+        return userService.getUserByUsernamePassword(username, password);
     }
 
 }

@@ -47,7 +47,19 @@ public class DataAccessService {
                 newUser.getUsername(),
                 newUser.getPassword(),
                 newUser.getEmail());
+    }
 
+
+    public User insertUserByUsernamePassword(String username, String password) {
+        final String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{username, password},
+                (resultSet, i) -> {
+                    UUID user_id = UUID.fromString(resultSet.getString("user_id"));
+                    String email = resultSet.getString("email");
+                    return new User(user_id, username, password, email);
+                });
     }
 }
 

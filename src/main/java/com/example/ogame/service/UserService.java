@@ -28,4 +28,12 @@ public class UserService {
         dataAccessService.insertUser(uuid, newUser);
     }
 
+    public User getUserByUsernamePassword(String username, String password) {
+
+        // if user dont exists
+//        if (false) {
+//            throw
+//        }
+        return dataAccessService.insertUserByUsernamePassword(username, password);
+    }
 }
