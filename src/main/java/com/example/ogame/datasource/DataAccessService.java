@@ -61,6 +61,16 @@ public class DataAccessService {
                     return new User(user_id, username, password, email);
                 });
     }
+
+    public boolean ifThisUserExists(String username, String password) {
+        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE username = ? AND password = ? )";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {username, password},
+                (resultSet, i) -> resultSet.getBoolean(1)
+        );
+    }
 }
 
 

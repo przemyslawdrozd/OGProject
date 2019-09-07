@@ -1,6 +1,7 @@
 package com.example.ogame.service;
 
 import com.example.ogame.datasource.DataAccessService;
+import com.example.ogame.exeptions.ApiRequestException;
 import com.example.ogame.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,9 @@ public class UserService {
     public User getUserByUsernamePassword(String username, String password) {
 
         // if user dont exists
-//        if (false) {
-//            throw
-//        }
+        if (!dataAccessService.ifThisUserExists(username, password)) {
+            throw new ApiRequestException("Username or Password is not correct!");
+        }
         return dataAccessService.insertUserByUsernamePassword(username, password);
     }
 }
