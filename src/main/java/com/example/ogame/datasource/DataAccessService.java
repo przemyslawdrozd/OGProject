@@ -2,6 +2,7 @@ package com.example.ogame.datasource;
 
 import com.example.ogame.model.Resources;
 import com.example.ogame.model.User;
+import com.example.ogame.model.UserInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -83,7 +84,7 @@ public class DataAccessService {
         );
     }
 
-    public Resources getResourcesByUserId(UUID user_id) {
+    public Resources insertResourcesByUserId(UUID user_id) {
         final String sql = "SELECT * FROM users " +
                 "JOIN user_instance USING (user_id) " +
                 "JOIN resources USING (resource_id) " +
@@ -101,6 +102,34 @@ public class DataAccessService {
                     return new Resources(resource_id, metal, cristal, deuterium);
                 }
         );
+    }
+
+    public UserInstance insertUserInstanceByUserId(UUID user_id) {
+        final String sql = "SELECT * FROM users " +
+                "JOIN user_instance USING (user_id) " +
+                "WHERE users.user_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {user_id},
+                (resultSet, i) -> {
+                    UUID resources_id = UUID.fromString(resultSet.getString("resource_id"));
+                    return new UserInstance(user_id, resources_id);
+                }
+        );
+    }
+
+    public int updateResources(Resources resources) {
+        final String sql = "UPDATE resources " +
+                "SET metal = ?, cristal = ?, deuterium = ? " +
+                "WHERE resource_id = ?";
+
+        return jdbcTemplate.update(
+                sql,
+                resources.getMetal(),
+                resources.getCristal(),
+                resources.getDeuterium(),
+                resources.getResource_id());
     }
 }
 

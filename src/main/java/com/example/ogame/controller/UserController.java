@@ -2,6 +2,7 @@ package com.example.ogame.controller;
 
 import com.example.ogame.model.Resources;
 import com.example.ogame.model.User;
+import com.example.ogame.model.UserInstance;
 import com.example.ogame.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,11 @@ public class UserController {
         userService.createNewUser(newUser);
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/{user_id}")
+    public UserInstance getUserInstanceByUserId(@PathVariable("user_id") String userId) {
+        return userService.getUserInstanceByUserId(userId);
+    }
+
     @RequestMapping(
             path = "/{username}/{password}",
             method = RequestMethod.GET
@@ -48,10 +54,18 @@ public class UserController {
         return userService.getUserByUsernamePassword(username, password);
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "resources/{user_id}")
+    // /resources
+    @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/resources")
     public Resources getResourcesByUserId(@PathVariable("user_id") String userID) {
         return userService.getResourcesByUserId(userID);
     }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/{user_id}/addextra")
+    public int addExtraResources(@PathVariable("user_id") String userID) {
+        return userService.addExtraResources(userID);
+    }
+
+
 
 }
 

@@ -29,6 +29,16 @@ public class Resources {
         this.deuterium = deuterium;
     }
 
+    public Resources(@JsonProperty("metal") int metal,
+                     @JsonProperty("cristal") int cristal,
+                     @JsonProperty("deuterium") int deuterium) {
+
+        this.metal = metal;
+        this.cristal = cristal;
+        this.deuterium = deuterium;
+    }
+
+
     public UUID getResource_id() {
         return resource_id;
     }
