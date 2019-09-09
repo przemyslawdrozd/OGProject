@@ -9,3 +9,9 @@ app:
     username: postgres
     password: password
     pool-size: 30
+
+logging:
+  level:
+#    root: info
+    com.example.ogame: trace
+
