@@ -1,5 +1,6 @@
 package com.example.ogame.datasource;
 
+import com.example.ogame.model.Resources;
 import com.example.ogame.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -69,6 +70,36 @@ public class DataAccessService {
                 sql,
                 new Object[] {username, password},
                 (resultSet, i) -> resultSet.getBoolean(1)
+        );
+    }
+
+    public boolean ifUserIdExists(UUID userID) {
+        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE user_id = ? )";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{userID},
+                (resultSet, i) -> resultSet.getBoolean(1)
+        );
+    }
+
+    public Resources getResourcesByUserId(UUID user_id) {
+        final String sql = "SELECT * FROM users " +
+                "JOIN user_instance USING (user_id) " +
+                "JOIN resources USING (resource_id) " +
+                "WHERE users.user_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {user_id},
+                (resultSet, i) -> {
+                    UUID resource_id = UUID.fromString(resultSet.getString("resource_id"));
+                    int metal = resultSet.getInt("metal");
+                    int cristal = resultSet.getInt("cristal");
+                    int deuterium = resultSet.getInt("deuterium");
+
+                    return new Resources(resource_id, metal, cristal, deuterium);
+                }
         );
     }
 }

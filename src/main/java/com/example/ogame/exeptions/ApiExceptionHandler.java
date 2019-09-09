@@ -1,4 +1,4 @@
-package com.example.ogame.datasource;
+package com.example.ogame.exeptions;
 
 import com.example.ogame.exeptions.ApiException;
 import com.example.ogame.exeptions.ApiRequestException;
