@@ -13,8 +13,7 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    Logger logger = LoggerFactory.getLogger(UserService.class);
-
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
     private final DataAccessService dataAccessService;
 
     @Autowired
@@ -62,17 +61,6 @@ public class UserService {
         return dataAccessService.selectUserByUsernamePassword(username, password);
     }
 
-    public Resources getResourcesByUserId(String userID) {
-        UUID user_id = UUID.fromString(userID);
-
-        // Verify User ID
-        if (!dataAccessService.ifUserIdExists(user_id)){
-            throw new ApiRequestException("Invalid user ID!");
-        }
-
-        return dataAccessService.selectResourcesByUserId(user_id);
-    }
-
     public UserInstance getUserInstanceByUserId(String userId) {
         UUID user_id = UUID.fromString(userId);
 
@@ -82,39 +70,6 @@ public class UserService {
         }
 
         return dataAccessService.insertUserInstanceByUserId(user_id);
-    }
-
-    public int addExtraResources(String userId) {
-
-        UUID user_id = UUID.fromString(userId);
-        Resources resources = dataAccessService.selectResourcesByUserId(user_id);
-
-        resources.setMetal(resources.getMetal() + 1000);
-        resources.setCristal(resources.getCristal() + 1000);
-        resources.setDeuterium(resources.getDeuterium() + 1000);
-
-        return dataAccessService.updateResources(resources);
-    }
-
-    public List<Building> getBuildings(String userID) {
-        logger.info("getBuildings from " + userID);
-        UUID user_id = UUID.fromString(userID);
-        return dataAccessService.selectBuildings(user_id);
-    }
-
-    public Building getMetalBuilding(String userID) {
-        UUID user_id = UUID.fromString(userID);
-        return dataAccessService.insertMetalBuilding(user_id);
-    }
-
-    public Building getCristalBuilding(String userID) {
-        UUID user_id = UUID.fromString(userID);
-        return dataAccessService.insertCristalBuilding(user_id);
-    }
-
-    public Building getDeuteriumBuilding(String userID) {
-        UUID user_id = UUID.fromString(userID);
-        return dataAccessService.insertDeuteriumBuilding(user_id);
     }
 }
 

@@ -1,6 +1,8 @@
 package com.example.ogame.controller;
 
 import com.example.ogame.model.*;
+import com.example.ogame.service.BuildingsService;
+import com.example.ogame.service.ResourceService;
 import com.example.ogame.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +19,18 @@ public class UserController {
     private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
+    private final ResourceService resourceService;
+    private final BuildingsService buildingsService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          ResourceService resourceService,
+                          BuildingsService buildingsService) {
+
         logger.info("Initializing UserService");
         this.userService = userService;
+        this.resourceService = resourceService;
+        this.buildingsService = buildingsService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -52,37 +61,36 @@ public class UserController {
         return userService.getUserByUsernamePassword(username, password);
     }
 
-    // /resources
     @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/resources")
     public Resources getResourcesByUserId(@PathVariable("user_id") String userID) {
-        return userService.getResourcesByUserId(userID);
+        return resourceService.getResourcesByUserId(userID);
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/{user_id}/addextra")
     public int addExtraResources(@PathVariable("user_id") String userID) {
-        return userService.addExtraResources(userID);
+        return resourceService.addExtraResources(userID);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/buildings")
     public List<Building> getListOfBuildings(@PathVariable("user_id") String userID) {
-        return userService.getBuildings(userID);
+        return buildingsService.getBuildings(userID);
     }
 
     // TODO GET single building
 
     @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/building/metal")
     public Building getMetalBuilding(@PathVariable("user_id") String userID) {
-        return userService.getMetalBuilding(userID);
+        return buildingsService.getMetalBuilding(userID);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/building/cristal")
     public Building getCristalBuilding(@PathVariable("user_id") String userID) {
-        return userService.getCristalBuilding(userID);
+        return buildingsService.getCristalBuilding(userID);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/building/deuterium")
     public Building getDeuteriumBuilding(@PathVariable("user_id") String userID) {
-        return userService.getDeuteriumBuilding(userID);
+        return buildingsService.getDeuteriumBuilding(userID);
     }
 
 }
