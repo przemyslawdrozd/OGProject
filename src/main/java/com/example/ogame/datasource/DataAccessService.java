@@ -1,13 +1,14 @@
 package com.example.ogame.datasource;
 
-import com.example.ogame.model.Resources;
-import com.example.ogame.model.User;
-import com.example.ogame.model.UserInstance;
+import com.example.ogame.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,8 @@ import java.util.UUID;
 public class DataAccessService {
 
     private final JdbcTemplate jdbcTemplate;
+    private Logger logger = LoggerFactory.getLogger(DataAccessService.class);
+
 
     @Autowired
     public DataAccessService(JdbcTemplate jdbcTemplate) {
@@ -52,7 +55,7 @@ public class DataAccessService {
     }
 
 
-    public User insertUserByUsernamePassword(String username, String password) {
+    public User selectUserByUsernamePassword(String username, String password) {
         final String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
         return jdbcTemplate.queryForObject(
                 sql,
@@ -84,12 +87,12 @@ public class DataAccessService {
         );
     }
 
-    public Resources insertResourcesByUserId(UUID user_id) {
+    public Resources selectResourcesByUserId(UUID user_id) {
         final String sql = "SELECT * FROM users " +
                 "JOIN user_instance USING (user_id) " +
                 "JOIN resources USING (resource_id) " +
                 "WHERE users.user_id = ?";
-
+        logger.info("GET RESOURCES SQL = " + sql);
         return jdbcTemplate.queryForObject(
                 sql,
                 new Object[] {user_id},
@@ -108,13 +111,14 @@ public class DataAccessService {
         final String sql = "SELECT * FROM users " +
                 "JOIN user_instance USING (user_id) " +
                 "WHERE users.user_id = ?";
-
+        logger.info("SQL = " + sql);
         return jdbcTemplate.queryForObject(
                 sql,
                 new Object[] {user_id},
                 (resultSet, i) -> {
                     UUID resources_id = UUID.fromString(resultSet.getString("resource_id"));
-                    return new UserInstance(user_id, resources_id);
+                    UUID buildings_id = UUID.fromString(resultSet.getString("buildings_id"));
+                    return new UserInstance(user_id, resources_id, buildings_id);
                 }
         );
     }
@@ -123,13 +127,100 @@ public class DataAccessService {
         final String sql = "UPDATE resources " +
                 "SET metal = ?, cristal = ?, deuterium = ? " +
                 "WHERE resource_id = ?";
-
+        logger.info("UPDATE RESOURCES SQL = " + sql);
         return jdbcTemplate.update(
                 sql,
                 resources.getMetal(),
                 resources.getCristal(),
                 resources.getDeuterium(),
                 resources.getResource_id());
+    }
+
+    public int insertNewResourcesToNewUser(UUID resource_id) {
+        final String sql = "INSERT INTO resources (" +
+                "resource_id, metal, cristal, deuterium) " +
+                "VALUES (?, ?, ?, ?)";
+        logger.info("SQL = " + sql);
+        Resources resources = new Resources(resource_id, 500, 500, 0);
+
+        return jdbcTemplate.update(
+                sql,
+                resource_id,
+                resources.getMetal(),
+                resources.getCristal(),
+                resources.getDeuterium());
+
+    }
+
+    public void insertNewInstance(UUID user_id, UUID resource_id, UUID buildings_id) {
+        final String sql = "INSERT INTO user_instance (user_id, resource_id, buildings_id) " +
+                "VALUES (?, ?, ?)";
+        logger.info("SQL = " + sql);
+        jdbcTemplate.update(sql,
+                user_id,
+                resource_id,
+                buildings_id);
+    }
+
+    public void insertNewBuildings(UUID building_id) {
+        // Create started buildings
+        List<Building> buildingList = new ArrayList<>();
+        buildingList.add(new Building(UUID.randomUUID(), "Metal Mine", 1, 100, 30,0));
+        buildingList.add(new Building(UUID.randomUUID(), "Cristal Mine", 1, 120, 60,0));
+        buildingList.add(new Building(UUID.randomUUID(), "Deuterium Synthesizer", 1, 150, 40,0));
+
+        for (Building building: buildingList) {
+            insertNewBuilding(building);
+        }
+        logger.info("Buildings inserted");
+
+        final String sql = "INSERT INTO buildings (" +
+                "buildings_id, b_metal_id, b_cristal_id, b_deuterium_id) VALUES " +
+                "(?, ?, ?, ?)";
+
+        jdbcTemplate.update(sql,
+                building_id,
+                buildingList.get(0).getBuilding_id(),
+                buildingList.get(1).getBuilding_id(),
+                buildingList.get(2).getBuilding_id());
+    }
+
+    private void insertNewBuilding(Building building) {
+        final String sql = "INSERT INTO building (" +
+                "building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium) VALUES " +
+                "(?, ?, ?, ?, ?, ?)";
+        logger.info("insertNewBuilding -> " + sql);
+        jdbcTemplate.update(
+                sql,
+                building.getBuilding_id(),
+                building.getName(),
+                building.getLevel(),
+                building.getNeededMetal(),
+                building.getNeededCristal(),
+                building.getNeededDeuterium());
+    }
+
+    public List<Building> selectBuildings(UUID user_id) {
+        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
+                "INNER JOIN buildings ON building_id = b_metal_id OR building_id = b_cristal_id OR building_id = b_deuterium_id " +
+                "JOIN user_instance USING (buildings_id)" +
+                "WHERE user_instance.user_id = ?";
+        logger.info("SELECT LIST OF BUILDINGS SQL = " + sql);
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{user_id},
+                (resultSet, i) -> {
+                    UUID building_id = UUID.fromString(resultSet.getString("building_id"));
+                    String name = resultSet.getString("namee");
+                    int lvl = resultSet.getInt("lvl");
+                    int needed_metal = resultSet.getInt("needed_metal");
+                    int needed_cristal = resultSet.getInt("needed_cristal");
+                    int needed_deuterium = resultSet.getInt("needed_deuterium");
+
+                    return new Building(building_id, name, lvl, needed_metal, needed_cristal, needed_deuterium);
+                }
+        );
     }
 }
 

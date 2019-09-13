@@ -2,9 +2,7 @@ package com.example.ogame.service;
 
 import com.example.ogame.datasource.DataAccessService;
 import com.example.ogame.exeptions.ApiRequestException;
-import com.example.ogame.model.Resources;
-import com.example.ogame.model.User;
-import com.example.ogame.model.UserInstance;
+import com.example.ogame.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +27,29 @@ public class UserService {
     }
 
     public void createNewUser(User newUser) {
-        UUID uuid = UUID.randomUUID();
-        String user_id = uuid.toString();
+        UUID user_id = UUID.randomUUID();
+        UUID resource_id = UUID.randomUUID();
+        UUID buildings_id = UUID.randomUUID();
 
-        dataAccessService.insertUser(uuid, newUser);
+        // Assign new Resources
+        dataAccessService.insertNewResourcesToNewUser(resource_id);
+        logger.info("New resources created");
+
+        // Buildings
+        dataAccessService.insertNewBuildings(buildings_id);
+        logger.info("New Buildings created");
+
+        // Create new user
+        dataAccessService.insertUser(user_id, newUser);
+        logger.info("New user created");
+
+        // Create new Instance
+        dataAccessService.insertNewInstance(
+                user_id,
+                resource_id,
+                buildings_id);
+
+        logger.info("New Instance created");
     }
 
     public User getUserByUsernamePassword(String username, String password) {
@@ -42,7 +59,7 @@ public class UserService {
             logger.debug("This user does not exists");
             throw new ApiRequestException("Username or Password is not correct!");
         }
-        return dataAccessService.insertUserByUsernamePassword(username, password);
+        return dataAccessService.selectUserByUsernamePassword(username, password);
     }
 
     public Resources getResourcesByUserId(String userID) {
@@ -53,7 +70,7 @@ public class UserService {
             throw new ApiRequestException("Invalid user ID!");
         }
 
-        return dataAccessService.insertResourcesByUserId(user_id);
+        return dataAccessService.selectResourcesByUserId(user_id);
     }
 
     public UserInstance getUserInstanceByUserId(String userId) {
@@ -70,7 +87,7 @@ public class UserService {
     public int addExtraResources(String userId) {
 
         UUID user_id = UUID.fromString(userId);
-        Resources resources = dataAccessService.insertResourcesByUserId(user_id);
+        Resources resources = dataAccessService.selectResourcesByUserId(user_id);
 
         resources.setMetal(resources.getMetal() + 1000);
         resources.setCristal(resources.getCristal() + 1000);
@@ -78,6 +95,13 @@ public class UserService {
 
         return dataAccessService.updateResources(resources);
     }
+
+    public List<Building> getBuildings(String userID) {
+        logger.info("getBuildings from " + userID);
+        UUID user_id = UUID.fromString(userID);
+        return dataAccessService.selectBuildings(user_id);
+    }
+
 }
 
 

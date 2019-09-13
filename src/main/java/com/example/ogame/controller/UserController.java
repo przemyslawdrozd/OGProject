@@ -1,8 +1,6 @@
 package com.example.ogame.controller;
 
-import com.example.ogame.model.Resources;
-import com.example.ogame.model.User;
-import com.example.ogame.model.UserInstance;
+import com.example.ogame.model.*;
 import com.example.ogame.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +63,10 @@ public class UserController {
         return userService.addExtraResources(userID);
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/buildings")
+    public List<Building> getListOfBuildings(@PathVariable("user_id") String userID) {
+        return userService.getBuildings(userID);
+    }
 
 
 }
