@@ -201,6 +201,7 @@ public class DataAccessService {
     }
 
     public List<Building> selectBuildings(UUID user_id) {
+        // TODO In future Try to make shorter query
         final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
                 "INNER JOIN buildings ON building_id = b_metal_id OR building_id = b_cristal_id OR building_id = b_deuterium_id " +
                 "JOIN user_instance USING (buildings_id)" +
@@ -210,17 +211,35 @@ public class DataAccessService {
         return jdbcTemplate.query(
                 sql,
                 new Object[]{user_id},
-                (resultSet, i) -> {
-                    UUID building_id = UUID.fromString(resultSet.getString("building_id"));
-                    String name = resultSet.getString("namee");
-                    int lvl = resultSet.getInt("lvl");
-                    int needed_metal = resultSet.getInt("needed_metal");
-                    int needed_cristal = resultSet.getInt("needed_cristal");
-                    int needed_deuterium = resultSet.getInt("needed_deuterium");
-
-                    return new Building(building_id, name, lvl, needed_metal, needed_cristal, needed_deuterium);
-                }
+                getBuildingRowMapper()
         );
+    }
+
+    public Building insertMetalBuilding(UUID user_id) {
+        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
+                "INNER JOIN buildings ON building_id = b_metal_id " +
+                "JOIN user_instance USING (buildings_id)" +
+                "WHERE user_instance.user_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {user_id},
+                getBuildingRowMapper()
+        );
+    }
+
+    // Get Single building
+    private RowMapper<Building> getBuildingRowMapper() {
+        return (resultSet, i) -> {
+            UUID building_id = UUID.fromString(resultSet.getString("building_id"));
+            String name = resultSet.getString("namee");
+            int lvl = resultSet.getInt("lvl");
+            int needed_metal = resultSet.getInt("needed_metal");
+            int needed_cristal = resultSet.getInt("needed_cristal");
+            int needed_deuterium = resultSet.getInt("needed_deuterium");
+
+            return new Building(building_id, name, lvl, needed_metal, needed_cristal, needed_deuterium);
+        };
     }
 }
 

@@ -24,6 +24,8 @@ public class Building {
     @NotNull
     private int neededDeuterium;
 
+    // TODO Time to build ?
+
     public Building(@JsonProperty("building_id") UUID building_id,
                     @JsonProperty("name") String name,
                     @JsonProperty("level") int level,

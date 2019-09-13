@@ -68,6 +68,12 @@ public class UserController {
         return userService.getBuildings(userID);
     }
 
+    // TODO GET single building
+
+    @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/building/metal")
+    public Building getMetalBuilding(@PathVariable("user_id") String userID) {
+        return userService.getMetalBuilding(userID);
+    }
 
 }
 

@@ -102,6 +102,10 @@ public class UserService {
         return dataAccessService.selectBuildings(user_id);
     }
 
+    public Building getMetalBuilding(String userID) {
+        UUID user_id = UUID.fromString(userID);
+        return dataAccessService.insertMetalBuilding(user_id);
+    }
 }
 
 
