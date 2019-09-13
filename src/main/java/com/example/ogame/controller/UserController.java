@@ -75,6 +75,16 @@ public class UserController {
         return userService.getMetalBuilding(userID);
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/building/cristal")
+    public Building getCristalBuilding(@PathVariable("user_id") String userID) {
+        return userService.getCristalBuilding(userID);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/building/deuterium")
+    public Building getDeuteriumBuilding(@PathVariable("user_id") String userID) {
+        return userService.getDeuteriumBuilding(userID);
+    }
+
 }
 
 

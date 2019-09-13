@@ -106,6 +106,16 @@ public class UserService {
         UUID user_id = UUID.fromString(userID);
         return dataAccessService.insertMetalBuilding(user_id);
     }
+
+    public Building getCristalBuilding(String userID) {
+        UUID user_id = UUID.fromString(userID);
+        return dataAccessService.insertCristalBuilding(user_id);
+    }
+
+    public Building getDeuteriumBuilding(String userID) {
+        UUID user_id = UUID.fromString(userID);
+        return dataAccessService.insertDeuteriumBuilding(user_id);
+    }
 }
 
 

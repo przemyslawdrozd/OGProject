@@ -241,6 +241,32 @@ public class DataAccessService {
             return new Building(building_id, name, lvl, needed_metal, needed_cristal, needed_deuterium);
         };
     }
+
+    public Building insertCristalBuilding(UUID user_id) {
+        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
+                "INNER JOIN buildings ON building_id = b_cristal_id " +
+                "JOIN user_instance USING (buildings_id)" +
+                "WHERE user_instance.user_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {user_id},
+                getBuildingRowMapper()
+        );
+    }
+
+    public Building insertDeuteriumBuilding(UUID user_id) {
+        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
+                "INNER JOIN buildings ON building_id = b_deuterium_id " +
+                "JOIN user_instance USING (buildings_id)" +
+                "WHERE user_instance.user_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {user_id},
+                getBuildingRowMapper()
+        );
+    }
 }
 
 
