@@ -55,24 +55,39 @@ public class DataAccessService {
     }
 
 
-    public User selectUserByUsernamePassword(String username, String password) {
-        final String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+    public User selectUserByEmailPassword(String email, String password) {
+        final String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
         return jdbcTemplate.queryForObject(
                 sql,
-                new Object[]{username, password},
+                new Object[]{email, password},
                 (resultSet, i) -> {
                     UUID user_id = UUID.fromString(resultSet.getString("user_id"));
-                    String email = resultSet.getString("email");
+                    String username = resultSet.getString("username");
                     return new User(user_id, username, password, email);
                 });
     }
 
-    public boolean ifThisUserExists(String username, String password) {
-        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE username = ? AND password = ? )";
+    public User insertUserById(UUID user_id) {
+        final String sql = "SELECT * FROM users " +
+                "WHERE user_id = ?";
+        logger.info("GET user: " + sql);
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {user_id},
+                (resultSet, i) -> {
+                    String username = resultSet.getString("username");
+                    String email = resultSet.getString("username");
+                    return new User(user_id, username, email);
+                }
+        );
+    }
+
+    public boolean ifThisUserExists(String email, String password) {
+        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE email = ? AND password = ? )";
 
         return jdbcTemplate.queryForObject(
                 sql,
-                new Object[] {username, password},
+                new Object[] {email, password},
                 (resultSet, i) -> resultSet.getBoolean(1)
         );
     }
@@ -267,6 +282,7 @@ public class DataAccessService {
                 getBuildingRowMapper()
         );
     }
+
 }
 
 

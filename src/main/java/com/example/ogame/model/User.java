@@ -14,7 +14,7 @@ public class User {
     private final String username;
 
     @NotBlank
-    private final String password;
+    private String password;
 
     @NotBlank
     @Email
@@ -28,6 +28,15 @@ public class User {
         this.user_id = user_id;
         this.username = username;
         this.password = password;
+        this.email = email;
+    }
+
+    public User(@JsonProperty("user_id") UUID user_id,
+                @JsonProperty("username") String username,
+                @JsonProperty("email") String email) {
+
+        this.user_id = user_id;
+        this.username = username;
         this.email = email;
     }
 

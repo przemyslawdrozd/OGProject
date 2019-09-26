@@ -12,7 +12,7 @@ public class UserInstance {
 
     public UserInstance(@JsonProperty("user_id") UUID user_id,
                         @JsonProperty("resource_id") UUID resource_id,
-                        @JsonProperty("buildings_is") UUID buildings_id
+                        @JsonProperty("buildings_id") UUID buildings_id
     ) {
 
         this.user_id = user_id;

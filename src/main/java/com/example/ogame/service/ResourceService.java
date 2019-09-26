@@ -32,7 +32,7 @@ public class ResourceService {
         return dataAccessService.updateResources(resources);
     }
 
-    public Resources getResourcesByUserId(String userId) {
+    public Resources getResources(String userId) {
         UUID user_id = UUID.fromString(userId);
         if (!dataAccessService.ifUserIdExists(user_id))
             throw new ApiRequestException("Invalid user ID!");

@@ -51,19 +51,31 @@ public class UserController {
     }
 
     @RequestMapping(
-            path = "/{username}/{password}",
+            path = "/{email}/{password}",
             method = RequestMethod.GET
     )
-    public User loginUserByUsernamePassword(
-            @PathVariable String username,
+    public User loginUserByEmailPassword(
+            @PathVariable String email,
             @PathVariable String password) {
-        logger.info("loginUserByUsernamePassword: " + username + " " + password);
-        return userService.getUserByUsernamePassword(username, password);
+        logger.info("loginUserByUsernamePassword: " + email + " " + password);
+        return userService.getUserByEmailPassword(email, password);
     }
+
+    @RequestMapping(
+            path = "/{user_id}/user",
+            method = RequestMethod.GET
+    )
+    public User getUserById(
+            @PathVariable("user_id") String userId
+    ) {
+        logger.info("GET user by id: " + userId);
+        return userService.getUserById(userId);
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/resources")
     public Resources getResourcesByUserId(@PathVariable("user_id") String userID) {
-        return resourceService.getResourcesByUserId(userID);
+        return resourceService.getResources(userID);
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/{user_id}/addextra")
@@ -77,7 +89,6 @@ public class UserController {
     }
 
     // TODO GET single building
-
     @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/building/metal")
     public Building getMetalBuilding(@PathVariable("user_id") String userID) {
         return buildingsService.getMetalBuilding(userID);
@@ -92,7 +103,6 @@ public class UserController {
     public Building getDeuteriumBuilding(@PathVariable("user_id") String userID) {
         return buildingsService.getDeuteriumBuilding(userID);
     }
-
 }
 
 

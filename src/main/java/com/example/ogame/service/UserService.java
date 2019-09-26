@@ -51,14 +51,14 @@ public class UserService {
         logger.info("New Instance created");
     }
 
-    public User getUserByUsernamePassword(String username, String password) {
+    public User getUserByEmailPassword(String email, String password) {
 
         // if user dont exists
-        if (!dataAccessService.ifThisUserExists(username, password)) {
+        if (!dataAccessService.ifThisUserExists(email, password)) {
             logger.debug("This user does not exists");
             throw new ApiRequestException("Username or Password is not correct!");
         }
-        return dataAccessService.selectUserByUsernamePassword(username, password);
+        return dataAccessService.selectUserByEmailPassword(email, password);
     }
 
     public UserInstance getUserInstanceByUserId(String userId) {
@@ -70,6 +70,17 @@ public class UserService {
         }
 
         return dataAccessService.insertUserInstanceByUserId(user_id);
+    }
+
+    public User getUserById(String userId) {
+        UUID user_id = UUID.fromString(userId);
+
+        // Verify User ID
+        if (!dataAccessService.ifUserIdExists(user_id)){
+            throw new ApiRequestException("Invalid user ID!");
+        }
+
+        return dataAccessService.insertUserById(user_id);
     }
 }
 
