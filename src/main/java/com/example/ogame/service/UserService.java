@@ -82,6 +82,10 @@ public class UserService {
 
         return dataAccessService.insertUserById(user_id);
     }
+
+    public void startProduce() {
+        dataAccessService.startProduce();
+    }
 }
 
 

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class User {
 
-    private final UUID user_id;
+    private UUID user_id;
 
     @NotBlank
     private final String username;
@@ -54,5 +54,15 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "user_id=" + user_id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

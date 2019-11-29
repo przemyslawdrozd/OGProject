@@ -283,6 +283,36 @@ public class DataAccessService {
         );
     }
 
+    public void startProduce() {
+
+        MyThread myThread = new MyThread(this);
+        myThread.start();
+    }
+
+    public static class MyThread extends Thread {
+
+        private final DataAccessService dataAccessService;
+
+        public MyThread(DataAccessService dataAccessService) {
+            this.dataAccessService = dataAccessService;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 1000; i++) {
+
+                for (User user : dataAccessService.selectAllStudents()){
+                    System.out.println(user.toString());
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
 
 
