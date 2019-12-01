@@ -8,15 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api-user")
 public class Controller {
 
     private Logger logger = LoggerFactory.getLogger(Controller.class);
 
-    protected final UserService userService;
     private final ResourceService resourceService;
     private final BuildingsService buildingsService;
 
@@ -24,58 +23,13 @@ public class Controller {
     public Controller(UserService userService,
                       ResourceService resourceService,
                       BuildingsService buildingsService) {
-
-        logger.info("Initializing UserService");
-        this.userService = userService;
         this.resourceService = resourceService;
         this.buildingsService = buildingsService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/aa/aa/aa")
-    public String startProduce() {
-        userService.startProduce();
-        return "Started";
-    }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public List<User> getAllUsers() {
-        logger.info("getAllUsers called");
-        userService.startProduce();
-        return userService.getAllUsers();
-    }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public void createNewUser(@RequestBody User newUser) {
-        logger.info("Create a new user: " + newUser);
-        userService.createNewUser(newUser);
-    }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/{user_id}")
-    public UserInstance getUserInstanceByUserId(@PathVariable("user_id") String userId) {
-        return userService.getUserInstanceByUserId(userId);
-    }
-
-    @RequestMapping(
-            path = "/{email}/{password}",
-            method = RequestMethod.GET
-    )
-    public User loginUserByEmailPassword(
-            @PathVariable String email,
-            @PathVariable String password) {
-        logger.info("loginUserByUsernamePassword: " + email + " " + password);
-        return userService.getUserByEmailPassword(email, password);
-    }
-
-    @RequestMapping(
-            path = "/{user_id}/user",
-            method = RequestMethod.GET
-    )
-    public User getUserById(
-            @PathVariable("user_id") String userId
-    ) {
-        logger.info("GET user by id: " + userId);
-        return userService.getUserById(userId);
-    }
 
 
     @RequestMapping(method = RequestMethod.GET, path = "/{user_id}/resources")
