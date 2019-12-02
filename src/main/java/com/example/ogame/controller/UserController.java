@@ -20,19 +20,19 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService) {
-        logger.info("Initializing UserService");
+        logger.info("Init - userService");
         this.userService = userService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public List<User> getAllUsers() {
-        logger.info("getAllUsers called");
+        logger.info("GET allUsers called");
         return userService.getAllUsers();
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public void createNewUser(@RequestBody User newUser) {
-        logger.info("Create a new user: " + newUser);
+        logger.info("POST create a new user - " + newUser);
         userService.createNewUser(newUser);
     }
 
@@ -40,6 +40,7 @@ public class UserController {
             method = RequestMethod.GET,
             path = "/{user_id}")
     public UserInstance getUserInstanceByUserId(@PathVariable("user_id") String userId) {
+        logger.info("GET userInstanceByUserId - " + userId);
         return userService.getUserInstanceByUserId(userId);
     }
 
@@ -50,7 +51,7 @@ public class UserController {
     public User loginUserByEmailPassword(
             @PathVariable String email,
             @PathVariable String password) {
-        logger.info("loginUserByUsernamePassword: " + email + " " + password);
+        logger.info("GET loginUserByUsernamePassword: " + email + " " + password);
         return userService.getUserByEmailPassword(email, password);
     }
 
@@ -59,7 +60,7 @@ public class UserController {
             method = RequestMethod.GET
     )
     public User getUserById(@PathVariable("user_id") String userId) {
-        logger.info("GET user by id: " + userId);
+        logger.info("GET user by id - " + userId);
         return userService.getUserById(userId);
     }
 }
