@@ -1,6 +1,7 @@
 package com.example.ogame.service;
 
 import com.example.ogame.datasource.DataAccessService;
+import com.example.ogame.datasource.UserDataAccess;
 import com.example.ogame.exeptions.ApiRequestException;
 import com.example.ogame.model.*;
 import org.slf4j.Logger;
@@ -15,14 +16,17 @@ public class UserService {
 
     private Logger logger = LoggerFactory.getLogger(UserService.class);
     private final DataAccessService dataAccessService;
+    private final UserDataAccess userDataAccess;
 
     @Autowired
-    public UserService(DataAccessService dataAccessService) {
+    public UserService(DataAccessService dataAccessService, UserDataAccess userDataAccess) {
         this.dataAccessService = dataAccessService;
+        this.userDataAccess = userDataAccess;
     }
 
     public List<User> getAllUsers() {
-        return dataAccessService.selectAllStudents();
+        logger.info("userService - getAllUsers");
+        return userDataAccess.selectAllStudents();
     }
 
     public void createNewUser(User newUser) {
@@ -31,19 +35,19 @@ public class UserService {
         UUID buildings_id = UUID.randomUUID();
 
         // Assign new Resources
-        dataAccessService.insertNewResourcesToNewUser(resource_id);
+        userDataAccess.insertNewResourcesToNewUser(resource_id);
         logger.info("New resources created");
 
         // Buildings
-        dataAccessService.insertNewBuildings(buildings_id);
+        userDataAccess.insertNewBuildings(buildings_id);
         logger.info("New Buildings created");
 
         // Create new user
-        dataAccessService.insertUser(user_id, newUser);
+        userDataAccess.insertUser(user_id, newUser);
         logger.info("New user created");
 
         // Create new Instance
-        dataAccessService.insertNewInstance(
+        userDataAccess.insertNewInstance(
                 user_id,
                 resource_id,
                 buildings_id);
@@ -81,10 +85,6 @@ public class UserService {
         }
 
         return dataAccessService.insertUserById(user_id);
-    }
-
-    public void startProduce() {
-        dataAccessService.startProduce();
     }
 }
 

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static java.lang.System.out;
+
 @RestController
 @RequestMapping("/user-api")
 public class UserController {
@@ -24,7 +26,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public List<User> getAllUsers() {
         logger.info("GET allUsers called");
         return userService.getAllUsers();
