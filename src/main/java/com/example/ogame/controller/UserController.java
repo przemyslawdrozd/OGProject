@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static java.lang.System.out;
-
 @RestController
 @RequestMapping("/user-api")
 public class UserController {
