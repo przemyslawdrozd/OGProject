@@ -1,4 +1,4 @@
-package com.example.ogame.model;
+package com.example.ogame.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

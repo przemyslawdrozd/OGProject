@@ -1,9 +1,10 @@
-package com.example.ogame.model;
+package com.example.ogame.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.UUID;
 
 public class User {
@@ -14,29 +15,19 @@ public class User {
     private final String username;
 
     @NotBlank
-    private String password;
+    private final String password;
 
     @NotBlank
     @Email
     private final String email;
 
-    public User(@JsonProperty("user_id") UUID user_id,
-                @JsonProperty("username") String username,
+    // To retrieve data and create new user
+    public User(@JsonProperty("username") String username,
                 @JsonProperty("password") String password,
                 @JsonProperty("email") String email) {
 
-        this.user_id = user_id;
         this.username = username;
         this.password = password;
-        this.email = email;
-    }
-
-    public User(@JsonProperty("user_id") UUID user_id,
-                @JsonProperty("username") String username,
-                @JsonProperty("email") String email) {
-
-        this.user_id = user_id;
-        this.username = username;
         this.email = email;
     }
 
@@ -54,6 +45,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setUser_id(UUID user_id) {
+        this.user_id = user_id;
     }
 
     @Override

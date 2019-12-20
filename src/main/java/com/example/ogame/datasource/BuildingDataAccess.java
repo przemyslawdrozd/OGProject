@@ -1,92 +1,29 @@
 package com.example.ogame.datasource;
 
-import com.example.ogame.model.*;
+import com.example.ogame.models.Building;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class DataAccessService {
+public class BuildingDataAccess {
 
     private final JdbcTemplate jdbcTemplate;
-    private Logger logger = LoggerFactory.getLogger(DataAccessService.class);
-
+    private Logger logger = LoggerFactory.getLogger(BuildingDataAccess.class);
 
     @Autowired
-    public DataAccessService(JdbcTemplate jdbcTemplate) {
+    public BuildingDataAccess(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User selectUserByEmailPassword(String email, String password) {
-        final String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
-        return jdbcTemplate.queryForObject(
-                sql,
-                new Object[]{email, password},
-                (resultSet, i) -> {
-                    UUID user_id = UUID.fromString(resultSet.getString("user_id"));
-                    String username = resultSet.getString("username");
-                    return new User(user_id, username, password, email);
-                });
-    }
-
-    public User insertUserById(UUID user_id) {
-        final String sql = "SELECT * FROM users " +
-                "WHERE user_id = ?";
-        logger.info("GET user: " + sql);
-        return jdbcTemplate.queryForObject(
-                sql,
-                new Object[] {user_id},
-                (resultSet, i) -> {
-                    String username = resultSet.getString("username");
-                    String email = resultSet.getString("username");
-                    return new User(user_id, username, email);
-                }
-        );
-    }
-
-    public boolean ifThisUserExists(String email, String password) {
-        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE email = ? AND password = ? )";
-
-        return jdbcTemplate.queryForObject(
-                sql,
-                new Object[] {email, password},
-                (resultSet, i) -> resultSet.getBoolean(1)
-        );
-    }
-
-    public boolean ifUserIdExists(UUID userID) {
-        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE user_id = ? )";
-
-        return jdbcTemplate.queryForObject(
-                sql,
-                new Object[]{userID},
-                (resultSet, i) -> resultSet.getBoolean(1)
-        );
-    }
-
-    public UserInstance insertUserInstanceByUserId(UUID user_id) {
-        final String sql = "SELECT * FROM users " +
-                "JOIN user_instance USING (user_id) " +
-                "WHERE users.user_id = ?";
-        logger.info("SQL = " + sql);
-        return jdbcTemplate.queryForObject(
-                sql,
-                new Object[] {user_id},
-                (resultSet, i) -> {
-                    UUID resources_id = UUID.fromString(resultSet.getString("resource_id"));
-                    UUID buildings_id = UUID.fromString(resultSet.getString("buildings_id"));
-                    return new UserInstance(user_id, resources_id, buildings_id);
-                }
-        );
-    }
-
     public List<Building> selectBuildings(UUID user_id) {
-        // TODO In future Try to make shorter query
+        // TODO In future Try to make shorter query - from user_id retrieve buildings_id
         final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
                 "INNER JOIN buildings ON building_id = b_metal_id OR building_id = b_cristal_id OR building_id = b_deuterium_id " +
                 "JOIN user_instance USING (buildings_id)" +

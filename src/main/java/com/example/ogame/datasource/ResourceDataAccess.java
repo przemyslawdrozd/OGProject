@@ -1,6 +1,6 @@
 package com.example.ogame.datasource;
 
-import com.example.ogame.model.Resources;
+import com.example.ogame.models.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public class ResourceDataAccess extends DataAccessService{
+public class ResourceDataAccess extends VerifyDataAccess {
 
-    // TODO try to use only one inside main Class
     private final JdbcTemplate jdbcTemplate;
     private Logger logger = LoggerFactory.getLogger(ResourceDataAccess.class);
 
@@ -21,7 +20,6 @@ public class ResourceDataAccess extends DataAccessService{
         super(jdbcTemplate);
         this.jdbcTemplate = jdbcTemplate;
     }
-
 
     public Resources selectResourcesByUserId(UUID user_id) {
         final String sql = "SELECT * FROM users " +

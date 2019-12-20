@@ -1,8 +1,9 @@
 package com.example.ogame.datasource;
 
-import com.example.ogame.model.Building;
-import com.example.ogame.model.Resources;
-import com.example.ogame.model.User;
+import com.example.ogame.models.Building;
+import com.example.ogame.models.Resources;
+import com.example.ogame.models.User;
+import com.example.ogame.models.UserInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,36 @@ public class UserDataAccess {
                 newUser.getEmail());
     }
 
+    public UserInstance insertUserInstanceByUserId(UUID user_id) {
+        final String sql = "SELECT * FROM users " +
+                "JOIN user_instance USING (user_id) " +
+                "WHERE users.user_id = ?";
+        logger.info("SQL = " + sql);
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {user_id},
+                (resultSet, i) -> {
+                    UUID resources_id = UUID.fromString(resultSet.getString("resource_id"));
+                    UUID buildings_id = UUID.fromString(resultSet.getString("buildings_id"));
+                    return new UserInstance(user_id, resources_id, buildings_id);
+                }
+        );
+    }
+
+    public User selectUserByEmailPassword(String email, String password) {
+        final String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{email, password},
+                (resultSet, i) -> {
+                    UUID user_id = UUID.fromString(resultSet.getString("user_id"));
+                    String username = resultSet.getString("username");
+                    User user = new User(username, password, email);
+                    user.setUser_id(user_id);
+                    return user;
+                });
+    }
+
     public void insertNewInstance(UUID user_id, UUID resource_id, UUID buildings_id) {
         final String sql = "INSERT INTO user_instance (user_id, resource_id, buildings_id) " +
                 "VALUES (?, ?, ?)";
@@ -108,13 +139,34 @@ public class UserDataAccess {
                 buildings_id);
     }
 
+    public User insertUserById(UUID user_id) {
+        final String sql = "SELECT * FROM users " +
+                "WHERE user_id = ?";
+        logger.info("GET user: " + sql);
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {user_id},
+                (resultSet, i) -> {
+                    String username = resultSet.getString("username");
+                    String email = resultSet.getString("username");
+                    String password = resultSet.getString("password");
+                    User user = new User(username, password, email);
+                    user.setUser_id(user_id);
+                    return user;
+                }
+        );
+    }
+
     private RowMapper<User> getUserFromDb() {
         return (resultSet, i) -> {
             UUID user_id = UUID.fromString(resultSet.getString("user_id"));
             String username = resultSet.getString("username");
             String password = resultSet.getString("password");
             String email = resultSet.getString("email");
-            return new User(user_id, username, password, email);
+
+            User user = new User(username, password, email);
+            user.setUser_id(user_id);
+            return user;
         };
     }
 }
