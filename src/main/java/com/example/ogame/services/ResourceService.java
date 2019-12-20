@@ -1,9 +1,8 @@
-package com.example.ogame.service;
+package com.example.ogame.services;
 
-import com.example.ogame.datasource.DataAccessService;
 import com.example.ogame.datasource.ResourceDataAccess;
 import com.example.ogame.exeptions.ApiRequestException;
-import com.example.ogame.model.Resources;
+import com.example.ogame.models.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
