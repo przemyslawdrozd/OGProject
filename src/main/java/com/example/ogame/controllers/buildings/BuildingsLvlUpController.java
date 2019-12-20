@@ -16,7 +16,7 @@ public class BuildingsLvlUpController {
 
     @Autowired
     public BuildingsLvlUpController(BuildingsLvlUpService buildingsLvlUpService) {
-        logger.info("Init - buildingService");
+        logger.info("Init - buildingsLvlUpService");
         this.buildingsLvlUpService = buildingsLvlUpService;
     }
 
