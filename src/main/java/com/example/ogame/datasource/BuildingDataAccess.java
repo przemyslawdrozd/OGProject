@@ -89,4 +89,18 @@ public class BuildingDataAccess {
                 getBuildingRowMapper()
         );
     }
+
+    public int updateBuilding(Building building) {
+        final String sql = "UPDATE building " +
+                "SET lvl = ?, needed_metal = ?, needed_cristal = ?, needed_deuterium = ?" +
+                "WHERE building_id = ?";
+        logger.info("UPDATE buildingLvlUp SQL = " + sql);
+        return jdbcTemplate.update(
+                sql,
+                building.getLevel(),
+                building.getNeededMetal(),
+                building.getNeededCristal(),
+                building.getNeededDeuterium(),
+                building.getBuilding_id());
+    }
 }

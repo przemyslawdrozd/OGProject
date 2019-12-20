@@ -1,6 +1,9 @@
 package com.example.ogame.services.buildings;
 
-import com.example.ogame.datasource.VerifyDataAccess;
+import com.example.ogame.datasource.BuildingDataAccess;
+import com.example.ogame.datasource.ResourceDataAccess;
+import com.example.ogame.models.Building;
+import com.example.ogame.models.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,10 +14,12 @@ import java.util.UUID;
 public class BuildingsLvlUpService {
 
     private Logger logger = LoggerFactory.getLogger(BuildingsLvlUpService.class);
-    private final VerifyDataAccess verifyDataAccess;
+    private final BuildingDataAccess buildingDataAccess;
+    private final ResourceDataAccess resourceDataAccess;
 
-    public BuildingsLvlUpService(VerifyDataAccess verifyDataAccess) {
-        this.verifyDataAccess = verifyDataAccess;
+    public BuildingsLvlUpService(BuildingDataAccess buildingDataAccess, ResourceDataAccess resourceDataAccess) {
+        this.buildingDataAccess = buildingDataAccess;
+        this.resourceDataAccess = resourceDataAccess;
     }
 
     // lvl up metal if enough resources
@@ -22,9 +27,36 @@ public class BuildingsLvlUpService {
         UUID user_id = UUID.fromString(userID);
 
         // Get Metal building from this user
-        // Check resources
-        // decide to lvl up
+        Building buildingMetal = buildingDataAccess.insertMetalBuilding(user_id);
+        Resources resources =  resourceDataAccess.selectResourcesByUserId(user_id);
+
+        lulUpBuilding(buildingMetal, resources);
+
+        int lvl = buildingMetal.getLevel();
+
+        if (buildingMetal.getNeededMetal() < resources.getMetal() ||
+                buildingMetal.getNeededCristal() < resources.getCristal()) {
+            lvl++;
+
+            resources.setMetal(resources.getMetal() - buildingMetal.getNeededMetal());
+            resources.setCristal(resources.getCristal() - buildingMetal.getNeededCristal());
+
+            // Update resources
+            resourceDataAccess.updateResources(new Resources(
+                    resources.getResource_id(),
+                    resources.getMetal(),
+                    resources.getCristal(),
+                    resources.getDeuterium()));
+
+            // Update Building
+            buildingDataAccess.updateBuilding(buildingMetal);
+        }
+
 
         return false;
+    }
+
+    private void lulUpBuilding(Building buildingMetal, Resources resources) {
+
     }
 }
