@@ -1,4 +1,4 @@
-package com.example.ogame.models;
+package com.example.ogame.models.building;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,6 +24,7 @@ public class Building {
     @NotNull
     private int neededDeuterium;
 
+    // TODO production of resources building
     // TODO Time to build ?
 
     public Building(@JsonProperty("building_id") UUID building_id,
@@ -41,8 +42,17 @@ public class Building {
         this.neededDeuterium = neededDeuterium;
     }
 
-    public static void lvlUpBuilding(Building building){
+    /**
+     This method will make lvl up on building and increase his statistic
+     TODO in the future create an production of each resource building
+     */
+    public void lvlUpBuilding(){
+        double increaseCost = 1.75;
+        this.level++;
 
+        this.neededMetal *= increaseCost;
+        this.neededCristal *= increaseCost;
+        this.neededDeuterium *= increaseCost;
     }
 
     public int getLevel() {

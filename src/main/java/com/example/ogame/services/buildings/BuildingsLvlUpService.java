@@ -2,7 +2,7 @@ package com.example.ogame.services.buildings;
 
 import com.example.ogame.datasource.BuildingDataAccess;
 import com.example.ogame.datasource.ResourceDataAccess;
-import com.example.ogame.models.Building;
+import com.example.ogame.models.building.Building;
 import com.example.ogame.models.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,33 +30,24 @@ public class BuildingsLvlUpService {
         Building buildingMetal = buildingDataAccess.insertMetalBuilding(user_id);
         Resources resources =  resourceDataAccess.selectResourcesByUserId(user_id);
 
-        lulUpBuilding(buildingMetal, resources);
-
-        int lvl = buildingMetal.getLevel();
-
         if (buildingMetal.getNeededMetal() < resources.getMetal() ||
                 buildingMetal.getNeededCristal() < resources.getCristal()) {
-            lvl++;
 
             resources.setMetal(resources.getMetal() - buildingMetal.getNeededMetal());
             resources.setCristal(resources.getCristal() - buildingMetal.getNeededCristal());
 
-            // Update resources
+            buildingMetal.lvlUpBuilding();
+            logger.info(buildingMetal.getName() + " has been lvl up : " + buildingMetal.getLevel());
+
             resourceDataAccess.updateResources(new Resources(
                     resources.getResource_id(),
                     resources.getMetal(),
                     resources.getCristal(),
                     resources.getDeuterium()));
 
-            // Update Building
             buildingDataAccess.updateBuilding(buildingMetal);
+            return true;
         }
-
-
         return false;
-    }
-
-    private void lulUpBuilding(Building buildingMetal, Resources resources) {
-
     }
 }

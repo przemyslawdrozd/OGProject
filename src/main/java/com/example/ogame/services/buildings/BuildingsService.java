@@ -2,7 +2,7 @@ package com.example.ogame.services.buildings;
 
 import com.example.ogame.datasource.BuildingDataAccess;
 import com.example.ogame.datasource.VerifyDataAccess;
-import com.example.ogame.models.Building;
+import com.example.ogame.models.building.Building;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

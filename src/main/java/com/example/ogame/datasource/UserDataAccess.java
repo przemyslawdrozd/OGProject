@@ -1,6 +1,6 @@
 package com.example.ogame.datasource;
 
-import com.example.ogame.models.Building;
+import com.example.ogame.models.building.Building;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.User;
 import com.example.ogame.models.UserInstance;
