@@ -24,6 +24,9 @@ public class Building {
     @NotNull
     private int neededDeuterium;
 
+    @NotNull
+    private int buildTime;
+
     // TODO production of resources building
     // TODO Time to build ?
 
@@ -32,7 +35,8 @@ public class Building {
                     @JsonProperty("level") int level,
                     @JsonProperty("neededMetal") int neededMetal,
                     @JsonProperty("neededCristal") int neededCristal,
-                    @JsonProperty("neededDeuterium") int neededDeuterium) {
+                    @JsonProperty("neededDeuterium") int neededDeuterium,
+                    @JsonProperty("build_time") int buildTime) {
 
         this.building_id = building_id;
         this.name = name;
@@ -40,6 +44,7 @@ public class Building {
         this.neededMetal = neededMetal;
         this.neededCristal = neededCristal;
         this.neededDeuterium = neededDeuterium;
+        this.buildTime = buildTime;
     }
 
     /**
@@ -93,5 +98,13 @@ public class Building {
 
     public UUID getBuilding_id() {
         return building_id;
+    }
+
+    public int getBuildTime() {
+        return buildTime;
+    }
+
+    public void setBuildTime(int buildTime) {
+        this.buildTime = buildTime;
     }
 }

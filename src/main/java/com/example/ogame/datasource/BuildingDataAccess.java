@@ -50,7 +50,7 @@ public class BuildingDataAccess {
         );
     }
 
-    // Get Single building
+    // TODO Every retrieving buildings uses this method!
     private RowMapper<Building> getBuildingRowMapper() {
         return (resultSet, i) -> {
             UUID building_id = UUID.fromString(resultSet.getString("building_id"));
@@ -59,8 +59,10 @@ public class BuildingDataAccess {
             int needed_metal = resultSet.getInt("needed_metal");
             int needed_cristal = resultSet.getInt("needed_cristal");
             int needed_deuterium = resultSet.getInt("needed_deuterium");
-
-            return new Building(building_id, name, lvl, needed_metal, needed_cristal, needed_deuterium);
+            // TODO fix these queries
+//            int buildTime = resultSet.getInt("build_time");
+            int buildTime = 0;
+            return new Building(building_id, name, lvl, needed_metal, needed_cristal, needed_deuterium, buildTime);
         };
     }
 

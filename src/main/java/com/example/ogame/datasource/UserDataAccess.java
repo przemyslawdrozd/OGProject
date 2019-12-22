@@ -4,6 +4,7 @@ import com.example.ogame.models.building.Building;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.User;
 import com.example.ogame.models.UserInstance;
+import com.example.ogame.models.building.ResourceBuilding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,21 @@ public class UserDataAccess {
     public void insertNewBuildings(UUID building_id) {
         // Create started buildings
         List<Building> buildingList = new ArrayList<>();
-        buildingList.add(new Building(UUID.randomUUID(), "Metal Mine", 1, 100, 30,0));
-        buildingList.add(new Building(UUID.randomUUID(), "Cristal Mine", 1, 120, 60,0));
-        buildingList.add(new Building(UUID.randomUUID(), "Deuterium Synthesizer", 1, 150, 40,0));
+        buildingList.add(new ResourceBuilding(UUID.randomUUID(), "Metal Mine",
+                1, 100, 30,0, 100, 500));
+
+        buildingList.add(new ResourceBuilding(UUID.randomUUID(), "Cristal Mine",
+                1, 120, 60,0, 150, 250));
+
+        buildingList.add(new ResourceBuilding(UUID.randomUUID(), "Deuterium Synthesizer",
+                1, 150, 40,0, 150, 100));
+
+        buildingList.add(new Building(UUID.randomUUID(), "Shipyard",
+                0,1500,250,100,2000));
 
         for (Building building: buildingList) {
             insertNewBuilding(building);
+            logger.info(building.getName() + " has been created");
         }
         logger.info("Buildings inserted");
 
@@ -75,8 +85,8 @@ public class UserDataAccess {
 
     private void insertNewBuilding(Building building) {
         final String sql = "INSERT INTO building (" +
-                "building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium) VALUES " +
-                "(?, ?, ?, ?, ?, ?)";
+                "building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?)";
         logger.info("insertNewBuilding - " + sql);
         jdbcTemplate.update(
                 sql,
@@ -85,7 +95,8 @@ public class UserDataAccess {
                 building.getLevel(),
                 building.getNeededMetal(),
                 building.getNeededCristal(),
-                building.getNeededDeuterium());
+                building.getNeededDeuterium(),
+                building.getBuildTime());
     }
 
     public void insertUser(UUID user_id, User newUser) {
