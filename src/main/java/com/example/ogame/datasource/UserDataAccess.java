@@ -66,8 +66,12 @@ public class UserDataAccess {
         buildingList.add(new Building(UUID.randomUUID(), "Shipyard",
                 0,1500,250,100,2000));
 
+        // TODO Temporary solution
         for (Building building: buildingList) {
-            insertNewBuilding(building);
+            if (building instanceof ResourceBuilding)
+                insertNewResourceBuilding((ResourceBuilding) building);
+            else
+                insertNewBuilding(building);
             logger.info(building.getName() + " has been created");
         }
         logger.info("Buildings inserted");
@@ -97,6 +101,23 @@ public class UserDataAccess {
                 building.getNeededCristal(),
                 building.getNeededDeuterium(),
                 building.getBuildTime());
+    }
+
+    private void insertNewResourceBuilding(ResourceBuilding building) {
+        final String sql = "INSERT INTO building (" +
+                "building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?)";
+        logger.info("insertNewBuilding - " + sql);
+        jdbcTemplate.update(
+                sql,
+                building.getBuilding_id(),
+                building.getName(),
+                building.getLevel(),
+                building.getNeededMetal(),
+                building.getNeededCristal(),
+                building.getNeededDeuterium(),
+                building.getBuildTime(),
+                building.getProductionPerHour());
     }
 
     public void insertUser(UUID user_id, User newUser) {

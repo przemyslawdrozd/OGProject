@@ -29,6 +29,8 @@ public class UserService {
         return userDataAccess.selectAllStudents();
     }
 
+    // TODO find a issue with the same email:
+    // When user`s account is created with used email exception shows but instance is created
     public boolean createNewUser(User newUser) {
         UUID user_id = UUID.randomUUID();
         UUID resource_id = UUID.randomUUID();
