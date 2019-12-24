@@ -1,6 +1,7 @@
 package com.example.ogame.datasource;
 
 import com.example.ogame.models.building.Building;
+import com.example.ogame.models.building.ResourceBuilding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,5 +105,38 @@ public class BuildingDataAccess {
                 building.getNeededCristal(),
                 building.getNeededDeuterium(),
                 building.getBuilding_id());
+    }
+
+    public void insertNewBuilding(Building building) {
+        final String sql = "INSERT INTO building (" +
+                "building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?)";
+        logger.info("insertNewBuilding - " + sql);
+        jdbcTemplate.update(
+                sql,
+                building.getBuilding_id(),
+                building.getName(),
+                building.getLevel(),
+                building.getNeededMetal(),
+                building.getNeededCristal(),
+                building.getNeededDeuterium(),
+                building.getBuildTime());
+    }
+
+    public void insertNewResourceBuilding(ResourceBuilding building) {
+        final String sql = "INSERT INTO building (" +
+                "building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?)";
+        logger.info("insertNewBuilding - " + sql);
+        jdbcTemplate.update(
+                sql,
+                building.getBuilding_id(),
+                building.getName(),
+                building.getLevel(),
+                building.getNeededMetal(),
+                building.getNeededCristal(),
+                building.getNeededDeuterium(),
+                building.getBuildTime(),
+                building.getProductionPerHour());
     }
 }

@@ -5,6 +5,7 @@ import com.example.ogame.models.Resources;
 import com.example.ogame.models.User;
 import com.example.ogame.models.UserInstance;
 import com.example.ogame.models.building.ResourceBuilding;
+import com.example.ogame.utils.CreateNewBuildingsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,11 +20,13 @@ import java.util.UUID;
 public class UserDataAccess {
 
     private final JdbcTemplate jdbcTemplate;
+    private final BuildingDataAccess buildingDataAccess;
     private Logger logger = LoggerFactory.getLogger(UserDataAccess.class);
 
     @Autowired
-    public UserDataAccess(JdbcTemplate jdbcTemplate) {
+    public UserDataAccess(JdbcTemplate jdbcTemplate, BuildingDataAccess buildingDataAccess) {
         this.jdbcTemplate = jdbcTemplate;
+        this.buildingDataAccess = buildingDataAccess;
     }
 
     public List<User> selectAllStudents() {
@@ -52,28 +54,17 @@ public class UserDataAccess {
     }
 
     public void insertNewBuildings(UUID building_id) {
-        // Create started buildings
-        List<Building> buildingList = new ArrayList<>();
-        buildingList.add(new ResourceBuilding(UUID.randomUUID(), "Metal Mine",
-                1, 100, 30,0, 100, 500));
+        List<Building> buildingList = CreateNewBuildingsHelper.createNewBuildingsForInstance();
 
-        buildingList.add(new ResourceBuilding(UUID.randomUUID(), "Cristal Mine",
-                1, 120, 60,0, 150, 250));
-
-        buildingList.add(new ResourceBuilding(UUID.randomUUID(), "Deuterium Synthesizer",
-                1, 150, 40,0, 150, 100));
-
-        buildingList.add(new Building(UUID.randomUUID(), "Shipyard",
-                0,1500,250,100,2000));
-
-        // TODO Temporary solution
         for (Building building: buildingList) {
-            if (building instanceof ResourceBuilding)
-                insertNewResourceBuilding((ResourceBuilding) building);
-            else
-                insertNewBuilding(building);
+            if (building instanceof ResourceBuilding) {
+                buildingDataAccess.insertNewResourceBuilding((ResourceBuilding) building);
+            } else {
+                buildingDataAccess.insertNewBuilding(building);
+            }
             logger.info(building.getName() + " has been created");
         }
+
         logger.info("Buildings inserted");
 
         final String sql = "INSERT INTO buildings (" +
@@ -85,39 +76,6 @@ public class UserDataAccess {
                 buildingList.get(0).getBuilding_id(),
                 buildingList.get(1).getBuilding_id(),
                 buildingList.get(2).getBuilding_id());
-    }
-
-    private void insertNewBuilding(Building building) {
-        final String sql = "INSERT INTO building (" +
-                "building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time) VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?)";
-        logger.info("insertNewBuilding - " + sql);
-        jdbcTemplate.update(
-                sql,
-                building.getBuilding_id(),
-                building.getName(),
-                building.getLevel(),
-                building.getNeededMetal(),
-                building.getNeededCristal(),
-                building.getNeededDeuterium(),
-                building.getBuildTime());
-    }
-
-    private void insertNewResourceBuilding(ResourceBuilding building) {
-        final String sql = "INSERT INTO building (" +
-                "building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour) VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?)";
-        logger.info("insertNewBuilding - " + sql);
-        jdbcTemplate.update(
-                sql,
-                building.getBuilding_id(),
-                building.getName(),
-                building.getLevel(),
-                building.getNeededMetal(),
-                building.getNeededCristal(),
-                building.getNeededDeuterium(),
-                building.getBuildTime(),
-                building.getProductionPerHour());
     }
 
     public void insertUser(UUID user_id, User newUser) {

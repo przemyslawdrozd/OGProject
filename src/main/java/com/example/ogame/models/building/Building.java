@@ -27,9 +27,6 @@ public class Building {
     @NotNull
     private int buildTime;
 
-    // TODO production of resources building
-    // TODO Time to build ?
-
     public Building(@JsonProperty("building_id") UUID building_id,
                     @JsonProperty("name") String name,
                     @JsonProperty("level") int level,
@@ -47,10 +44,6 @@ public class Building {
         this.buildTime = buildTime;
     }
 
-    /**
-     This method will make lvl up on building and increase his statistic
-     TODO in the future create an production of each resource building
-     */
     public void lvlUpBuilding(){
         double increaseCost = 1.75;
         this.level++;
