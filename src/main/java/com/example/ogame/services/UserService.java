@@ -1,5 +1,6 @@
 package com.example.ogame.services;
 
+import com.example.ogame.datasource.BuildingDataAccess;
 import com.example.ogame.datasource.VerifyDataAccess;
 import com.example.ogame.datasource.UserDataAccess;
 import com.example.ogame.exeptions.ApiRequestException;
@@ -17,11 +18,15 @@ public class UserService {
     private Logger logger = LoggerFactory.getLogger(UserService.class);
     private final VerifyDataAccess verifyDataAccess;
     private final UserDataAccess userDataAccess;
+    private final BuildingDataAccess buildingDataAccess;
 
     @Autowired
-    public UserService(VerifyDataAccess verifyDataAccess, UserDataAccess userDataAccess) {
+    public UserService(VerifyDataAccess verifyDataAccess,
+                       UserDataAccess userDataAccess,
+                       BuildingDataAccess buildingDataAccess) {
         this.verifyDataAccess = verifyDataAccess;
         this.userDataAccess = userDataAccess;
+        this.buildingDataAccess = buildingDataAccess;
     }
 
     public List<User> getAllUsers() {
@@ -41,7 +46,7 @@ public class UserService {
         logger.info("New resources created");
 
         // Buildings
-        userDataAccess.insertNewBuildings(buildings_id);
+        buildingDataAccess.insertNewBuildings(buildings_id);
         logger.info("New Buildings created");
 
         // Create new user

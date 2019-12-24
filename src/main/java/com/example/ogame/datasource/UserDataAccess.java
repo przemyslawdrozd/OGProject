@@ -1,11 +1,8 @@
 package com.example.ogame.datasource;
 
-import com.example.ogame.models.building.Building;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.User;
 import com.example.ogame.models.UserInstance;
-import com.example.ogame.models.building.ResourceBuilding;
-import com.example.ogame.utils.CreateNewBuildingsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,31 +48,6 @@ public class UserDataAccess {
                 resources.getMetal(),
                 resources.getCristal(),
                 resources.getDeuterium());
-    }
-
-    public void insertNewBuildings(UUID building_id) {
-        List<Building> buildingList = CreateNewBuildingsHelper.createNewBuildingsForInstance();
-
-        for (Building building: buildingList) {
-            if (building instanceof ResourceBuilding) {
-                buildingDataAccess.insertNewResourceBuilding((ResourceBuilding) building);
-            } else {
-                buildingDataAccess.insertNewBuilding(building);
-            }
-            logger.info(building.getName() + " has been created");
-        }
-
-        logger.info("Buildings inserted");
-
-        final String sql = "INSERT INTO buildings (" +
-                "buildings_id, b_metal_id, b_cristal_id, b_deuterium_id) VALUES " +
-                "(?, ?, ?, ?)";
-
-        jdbcTemplate.update(sql,
-                building_id,
-                buildingList.get(0).getBuilding_id(),
-                buildingList.get(1).getBuilding_id(),
-                buildingList.get(2).getBuilding_id());
     }
 
     public void insertUser(UUID user_id, User newUser) {

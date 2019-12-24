@@ -23,7 +23,7 @@ public class BuildingController {
     }
 
     @GetMapping(path = "/{user_id}/buildings")
-    public List<Building> getListOfBuildings(@PathVariable("user_id") String userID) {
+    public List<? extends Building> getListOfBuildings(@PathVariable("user_id") String userID) {
         logger.info("GET listOfBuildings - " + userID);
         return buildingsService.getBuildings(userID);
     }

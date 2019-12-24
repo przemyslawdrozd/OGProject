@@ -15,16 +15,14 @@ import java.util.UUID;
 public class BuildingsService {
 
     private Logger logger = LoggerFactory.getLogger(BuildingsService.class);
-    private final VerifyDataAccess verifyDataAccess;
     private final BuildingDataAccess buildingDataAccess;
 
     @Autowired
-    public BuildingsService(VerifyDataAccess verifyDataAccess, BuildingDataAccess buildingDataAccess) {
-        this.verifyDataAccess = verifyDataAccess;
+    public BuildingsService(BuildingDataAccess buildingDataAccess) {
         this.buildingDataAccess = buildingDataAccess;
     }
 
-    public List<Building> getBuildings(String userID) {
+    public List<? extends Building> getBuildings(String userID) {
         logger.info("getBuildings from " + userID);
         UUID user_id = UUID.fromString(userID);
         return buildingDataAccess.selectBuildings(user_id);
@@ -32,16 +30,16 @@ public class BuildingsService {
 
     public Building getMetalBuilding(String userID) {
         UUID user_id = UUID.fromString(userID);
-        return buildingDataAccess.insertMetalBuilding(user_id);
+        return buildingDataAccess.selectMetalBuilding(user_id);
     }
 
     public Building getCristalBuilding(String userID) {
         UUID user_id = UUID.fromString(userID);
-        return buildingDataAccess.insertCristalBuilding(user_id);
+        return buildingDataAccess.selectCristalBuilding(user_id);
     }
 
     public Building getDeuteriumBuilding(String userID) {
         UUID user_id = UUID.fromString(userID);
-        return buildingDataAccess.insertDeuteriumBuilding(user_id);
+        return buildingDataAccess.selectDeuteriumBuilding(user_id);
     }
 }

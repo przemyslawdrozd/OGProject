@@ -27,7 +27,7 @@ public class BuildingsLvlUpService {
         UUID user_id = UUID.fromString(userID);
 
         // Get Metal building from this user
-        Building buildingMetal = buildingDataAccess.insertMetalBuilding(user_id);
+        Building buildingMetal = buildingDataAccess.selectMetalBuilding(user_id);
         Resources resources =  resourceDataAccess.selectResourcesByUserId(user_id);
 
         if (buildingMetal.getNeededMetal() < resources.getMetal() ||
