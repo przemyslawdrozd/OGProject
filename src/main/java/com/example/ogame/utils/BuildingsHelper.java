@@ -32,13 +32,14 @@ public class BuildingsHelper {
     }
 
     public static Object[] getBuildingsIds(UUID buildings_id, List<Building> buildingList) {
-        return new Object[]{
-                buildings_id, //
-                buildingList.get(0).getBuilding_id(), // Metal
-                buildingList.get(1).getBuilding_id(), // Cristal
-                buildingList.get(2).getBuilding_id(), // Deuterium
-                buildingList.get(3).getBuilding_id() // Shipyard
-        };
+
+        Object[] objects = new Object[buildingList.size() + 1];
+        objects[0] = buildings_id;
+
+        for (int i = 1; i <= buildingList.size(); i++) {
+            objects[i] = buildingList.get(i - 1).getBuilding_id();
+        }
+        return objects;
     }
 
     public static Object[] insertResourceBuilding(ResourceBuilding building) {
