@@ -2,9 +2,13 @@ package com.example.ogame.models.building;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class BuildingInstance {
+
+    private List<UUID> uuidList;
 
     private final UUID buildings_id;
 
@@ -27,6 +31,16 @@ public class BuildingInstance {
         this.b_cristal_id = b_cristal_id;
         this.b_deuterium_id = b_deuterium_id;
         this.b_shipyard_id = b_shipyard_id;
+
+        initUUIDs();
+    }
+
+    private void initUUIDs() {
+        this.uuidList = new ArrayList<>();
+        uuidList.add(this.b_metal_id);
+        uuidList.add(this.b_cristal_id);
+        uuidList.add(this.b_deuterium_id);
+        uuidList.add(this.b_shipyard_id);
     }
 
     public UUID getBuildings_id() {
@@ -62,5 +76,9 @@ public class BuildingInstance {
             default:
                 return null;
         }
+    }
+
+    public List<UUID> getUuidList() {
+        return uuidList;
     }
 }
