@@ -1,7 +1,6 @@
 package com.example.ogame.services.buildings;
 
 import com.example.ogame.datasource.BuildingDataAccess;
-import com.example.ogame.datasource.VerifyDataAccess;
 import com.example.ogame.models.building.Building;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,7 @@ public class BuildingsService {
     public List<? extends Building> getBuildings(String userID) {
         logger.info("getBuildings from " + userID);
         UUID user_id = UUID.fromString(userID);
-        return buildingDataAccess.selectBuildings(user_id);
+        return buildingDataAccess.selectListOfBuildings(user_id);
     }
 
     public Building getMetalBuilding(String userID) {
