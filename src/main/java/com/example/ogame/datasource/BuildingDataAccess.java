@@ -1,6 +1,7 @@
 package com.example.ogame.datasource;
 
 import com.example.ogame.models.building.Building;
+import com.example.ogame.models.building.BuildingInstance;
 import com.example.ogame.models.building.ResourceBuilding;
 import com.example.ogame.utils.BuildingsHelper;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,66 +26,80 @@ public class BuildingDataAccess {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // TODO This method retrieve only resource buildings
-    public List<? extends Building> selectBuildings(UUID user_id) {
-        // TODO In future Try to make shorter query - from user_id retrieve buildings_id
-        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour FROM building " +
-                "INNER JOIN buildings ON building_id = b_metal_id OR building_id = b_cristal_id OR building_id = b_deuterium_id " +
-                "JOIN user_instance USING (buildings_id)" +
-                "WHERE user_instance.user_id = ?";
-        logger.info("SELECT LIST OF BUILDINGS SQL = " + sql);
+    public List<? extends Building> selectListOfBuildings(UUID user_id) {
+        List<Building> buildingList = new ArrayList<>();
+        BuildingInstance buildingInstance = selectBuildingsObjectByBuildingsId(user_id);
 
-        return jdbcTemplate.query(
+        for (UUID uuid: buildingInstance.getUuidList()){
+            buildingList.add(selectBuildingByBuildingId(uuid));
+        }
+
+        return buildingList;
+    }
+
+    public Building selectBuildingByUserIdAndBuildingName(UUID user_id, String buildingName) {
+        BuildingInstance buildingInstance = selectBuildingsObjectByBuildingsId(user_id);
+        UUID building_id = buildingInstance.getBuildingIdByName(buildingName);
+
+        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour" +
+                " FROM building WHERE building_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{building_id},
+                getBuildingRowMapper()
+        );
+    }
+
+    public Building selectBuildingByBuildingId(UUID building_id) {
+        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour" +
+                " FROM building WHERE building_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{building_id},
+                getBuildingRowMapper()
+        );
+
+    }
+
+    public UUID selectBuildingsIdByUserId(UUID user_id) {
+        final String sql = "SELECT buildings_id FROM user_instance WHERE user_id = ?";
+
+        return jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{user_id},
-                getBuildingRowMapper()
+                (rs, i) -> UUID.fromString(rs.getString("buildings_id")));
+    }
+
+    public BuildingInstance selectBuildingsObjectByBuildingsId(UUID user_id) {
+        final UUID buildings_id = selectBuildingsIdByUserId(user_id);
+        final String sql = "SELECT b_metal_id, b_cristal_id, b_deuterium_id, b_shipyard_id " +
+                "FROM building_instance WHERE buildings_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{buildings_id},
+                (rs, i) -> new BuildingInstance(
+                        buildings_id,
+                        UUID.fromString(rs.getString("b_metal_id")),
+                        UUID.fromString(rs.getString("b_cristal_id")),
+                        UUID.fromString(rs.getString("b_deuterium_id")),
+                        UUID.fromString(rs.getString("b_shipyard_id")))
         );
     }
 
     public Building selectMetalBuilding(UUID user_id) {
         final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
-                "INNER JOIN buildings ON building_id = b_metal_id " +
+                "INNER JOIN building_instance ON building_id = b_metal_id " +
                 "JOIN user_instance USING (buildings_id)" +
                 "WHERE user_instance.user_id = ?";
 
         return jdbcTemplate.queryForObject(
                 sql,
-                new Object[] {user_id},
+                new Object[]{user_id},
                 getBuildingRowMapper()
         );
-    }
-
-    public Building selectCristalBuilding(UUID user_id) {
-        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
-                "INNER JOIN buildings ON building_id = b_cristal_id " +
-                "JOIN user_instance USING (buildings_id)" +
-                "WHERE user_instance.user_id = ?";
-
-        return jdbcTemplate.queryForObject(
-                sql,
-                new Object[] {user_id},
-                getBuildingRowMapper()
-        );
-    }
-
-    public Building selectDeuteriumBuilding(UUID user_id) {
-        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
-                "INNER JOIN buildings ON building_id = b_deuterium_id " +
-                "JOIN user_instance USING (buildings_id)" +
-                "WHERE user_instance.user_id = ?";
-
-        return jdbcTemplate.queryForObject(
-                sql,
-                new Object[] {user_id},
-                getBuildingRowMapper()
-        );
-    }
-
-    // TODO use only one method to retrieve every building by id
-    public Building selectBuildingById(UUID building_id) {
-        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour " +
-                "FROM building";
-        return null;
     }
 
     private RowMapper<? extends Building> getBuildingRowMapper() {
@@ -95,19 +111,13 @@ public class BuildingDataAccess {
             int needed_cristal = resultSet.getInt("needed_cristal");
             int needed_deuterium = resultSet.getInt("needed_deuterium");
             int buildTime = resultSet.getInt("build_time");
-            int production_per_hour;
+            int production_per_hour = resultSet.getInt("production_per_hour");
 
-            try {
-                production_per_hour = resultSet.getInt("production_per_hour");
-            } catch (Exception e) {
-                return new Building(building_id,
-                        name, lvl, needed_metal, needed_cristal,
-                        needed_deuterium, buildTime);
-            }
+            if (production_per_hour == 0)
+                return new Building(building_id, name, lvl, needed_metal, needed_cristal, needed_deuterium, buildTime);
 
-            return new ResourceBuilding(building_id,
-                    name, lvl, needed_metal, needed_cristal,
-                    needed_deuterium, buildTime, production_per_hour);
+            return new ResourceBuilding(building_id, name, lvl, needed_metal, needed_cristal, needed_deuterium, buildTime,
+                    production_per_hour);
         };
     }
 
@@ -128,7 +138,7 @@ public class BuildingDataAccess {
     public void insertNewBuildings(UUID buildings_id) {
         List<Building> buildingList = BuildingsHelper.createNewBuildingsForInstance();
 
-        for (Building building: buildingList) {
+        for (Building building : buildingList) {
             if (building instanceof ResourceBuilding) {
                 insertNewResourceBuilding((ResourceBuilding) building);
             } else {
@@ -136,13 +146,12 @@ public class BuildingDataAccess {
             }
             logger.info(building.getName() + " has been created");
         }
-
         logger.info("Buildings inserted");
 
         final String sql = "INSERT INTO buildings (" +
                 "buildings_id, b_metal_id, b_cristal_id, b_deuterium_id, b_shipyard_id) VALUES " +
                 "(?, ?, ?, ?, ?)";
-        logger.info("insertNewBuildings - " + sql);
+        logger.info("insertNewbuilding_instance - " + sql);
         jdbcTemplate.update(sql, BuildingsHelper.getBuildingsIds(buildings_id, buildingList));
     }
 
