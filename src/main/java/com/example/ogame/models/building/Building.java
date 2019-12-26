@@ -1,4 +1,4 @@
-package com.example.ogame.models;
+package com.example.ogame.models.building;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,14 +24,16 @@ public class Building {
     @NotNull
     private int neededDeuterium;
 
-    // TODO Time to build ?
+    @NotNull
+    private int buildTime;
 
     public Building(@JsonProperty("building_id") UUID building_id,
                     @JsonProperty("name") String name,
                     @JsonProperty("level") int level,
                     @JsonProperty("neededMetal") int neededMetal,
                     @JsonProperty("neededCristal") int neededCristal,
-                    @JsonProperty("neededDeuterium") int neededDeuterium) {
+                    @JsonProperty("neededDeuterium") int neededDeuterium,
+                    @JsonProperty("build_time") int buildTime) {
 
         this.building_id = building_id;
         this.name = name;
@@ -39,10 +41,16 @@ public class Building {
         this.neededMetal = neededMetal;
         this.neededCristal = neededCristal;
         this.neededDeuterium = neededDeuterium;
+        this.buildTime = buildTime;
     }
 
-    public static void lvlUpBuilding(Building building){
+    public void lvlUpBuilding(){
+        double increaseCost = 1.75;
+        this.level++;
 
+        this.neededMetal *= increaseCost;
+        this.neededCristal *= increaseCost;
+        this.neededDeuterium *= increaseCost;
     }
 
     public int getLevel() {
@@ -83,5 +91,13 @@ public class Building {
 
     public UUID getBuilding_id() {
         return building_id;
+    }
+
+    public int getBuildTime() {
+        return buildTime;
+    }
+
+    public void setBuildTime(int buildTime) {
+        this.buildTime = buildTime;
     }
 }
