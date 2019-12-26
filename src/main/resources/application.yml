@@ -16,3 +16,5 @@ logging:
     com.example.ogame: trace
 
 # URL Swagger start - http://localhost:8080/swagger-ui.html
+
+# Retrieve building properties
