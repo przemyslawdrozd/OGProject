@@ -148,7 +148,7 @@ public class BuildingDataAccess {
         }
         logger.info("Buildings inserted");
 
-        final String sql = "INSERT INTO buildings (" +
+        final String sql = "INSERT INTO building_instance (" +
                 "buildings_id, b_metal_id, b_cristal_id, b_deuterium_id, b_shipyard_id) VALUES " +
                 "(?, ?, ?, ?, ?)";
         logger.info("insertNewbuilding_instance - " + sql);
