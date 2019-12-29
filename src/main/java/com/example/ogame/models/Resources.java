@@ -29,6 +29,12 @@ public class Resources {
         this.deuterium = deuterium;
     }
 
+    public void updatePerSec(double metal, double cristal, double deuterium) {
+        this.metal += metal;
+        this.cristal += cristal;
+        this.deuterium += deuterium;
+    }
+
     public UUID getResource_id() {
         return resource_id;
     }
