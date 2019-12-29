@@ -31,7 +31,7 @@ public class UserService {
 
     public List<User> getAllUsers() {
         logger.info("userService - getAllUsers");
-        return userDataAccess.selectAllStudents();
+        return userDataAccess.selectAllUsers();
     }
 
     // TODO find a issue with the same email:
