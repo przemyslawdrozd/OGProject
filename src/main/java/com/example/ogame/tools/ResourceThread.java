@@ -49,7 +49,7 @@ public class ResourceThread implements ApplicationListener<ContextRefreshedEvent
             int initUsers = 0;
             do {
                 final List<UUID> listOfUserIds = userDataAccess.selectAllUsersUUID();
-                System.out.println("Number of users: " + listOfUserIds.size());
+//                logger.info("Number of users: " + listOfUserIds.size());
                 int amountOfUsers = listOfUserIds.size();
                 if (startFlag) { // init start
                     ExecutorService executorService = Executors.newFixedThreadPool(amountOfUsers);

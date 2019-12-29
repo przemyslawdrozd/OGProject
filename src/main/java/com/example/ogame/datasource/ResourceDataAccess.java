@@ -26,7 +26,7 @@ public class ResourceDataAccess extends VerifyDataAccess {
                 "JOIN user_instance USING (user_id) " +
                 "JOIN resources USING (resource_id) " +
                 "WHERE users.user_id = ?";
-        logger.info("GET RESOURCES SQL = " + sql);
+//        logger.info("GET RESOURCES SQL = " + sql);
         return jdbcTemplate.queryForObject(
                 sql,
                 new Object[] {user_id},
@@ -45,7 +45,7 @@ public class ResourceDataAccess extends VerifyDataAccess {
         final String sql = "UPDATE resources " +
                 "SET metal = ?, cristal = ?, deuterium = ? " +
                 "WHERE resource_id = ?";
-        logger.info("UPDATE RESOURCES SQL = " + sql);
+//        logger.info("UPDATE RESOURCES SQL = " + sql);
         return jdbcTemplate.update(
                 sql,
                 resources.getMetal(),
