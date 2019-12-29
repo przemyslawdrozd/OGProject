@@ -26,13 +26,21 @@ public class UserDataAccess {
         this.buildingDataAccess = buildingDataAccess;
     }
 
-    public List<User> selectAllStudents() {
+    public List<User> selectAllUsers() {
         final String sql = "SELECT user_id, username, password, email FROM users";
         logger.trace("selectAllStudents - " + sql);
 
         return jdbcTemplate.query(
                 sql,
                 getUserFromDb());
+    }
+
+    public List<UUID> selectAllUsersUUID() {
+        final String sql = "SELECT user_id FROM users";
+
+        return jdbcTemplate.query(
+                sql,
+                (rs, i) -> UUID.fromString(rs.getString("user_id")));
     }
 
     public int insertNewResourcesToNewUser(UUID resource_id) {

@@ -89,19 +89,6 @@ public class BuildingDataAccess {
         );
     }
 
-    public Building selectMetalBuilding(UUID user_id) {
-        final String sql = "SELECT building_id, namee, lvl, needed_metal, needed_cristal, needed_deuterium FROM building " +
-                "INNER JOIN building_instance ON building_id = b_metal_id " +
-                "JOIN user_instance USING (buildings_id)" +
-                "WHERE user_instance.user_id = ?";
-
-        return jdbcTemplate.queryForObject(
-                sql,
-                new Object[]{user_id},
-                getBuildingRowMapper()
-        );
-    }
-
     private RowMapper<? extends Building> getBuildingRowMapper() {
         return (resultSet, i) -> {
             UUID building_id = UUID.fromString(resultSet.getString("building_id"));
