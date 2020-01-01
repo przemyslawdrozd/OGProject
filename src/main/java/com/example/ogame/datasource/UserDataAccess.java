@@ -3,27 +3,31 @@ package com.example.ogame.datasource;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.User;
 import com.example.ogame.models.UserInstance;
+import com.example.ogame.services.ApplicationUserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class UserDataAccess {
+public class UserDataAccess implements ApplicationUserDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final BuildingDataAccess buildingDataAccess;
+    private final PasswordEncoder passwordEncoder;
     private Logger logger = LoggerFactory.getLogger(UserDataAccess.class);
 
     @Autowired
-    public UserDataAccess(JdbcTemplate jdbcTemplate, BuildingDataAccess buildingDataAccess) {
+    public UserDataAccess(JdbcTemplate jdbcTemplate,
+                          PasswordEncoder passwordEncoder) {
         this.jdbcTemplate = jdbcTemplate;
-        this.buildingDataAccess = buildingDataAccess;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> selectAllUsers() {
@@ -127,11 +131,24 @@ public class UserDataAccess {
         );
     }
 
+    @Override
+    public Optional<User> selectUserByUsername(String username) {
+        final String sql = "SELECT * FROM users WHERE username = ?";
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{username},
+                getUserFromDb()
+        )
+                .stream()
+                .filter(user -> username.equals(user.getUsername())).findFirst();
+    }
+
     private RowMapper<User> getUserFromDb() {
         return (resultSet, i) -> {
             UUID user_id = UUID.fromString(resultSet.getString("user_id"));
             String username = resultSet.getString("username");
-            String password = resultSet.getString("password");
+            String password = passwordEncoder.encode(resultSet.getString("password"));
             String email = resultSet.getString("email");
 
             User user = new User(username, password, email);

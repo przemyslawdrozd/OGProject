@@ -1,13 +1,14 @@
 package com.example.ogame.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
-import java.util.UUID;
+import java.util.*;
 
-public class User {
+public class User implements UserDetails {
 
     private UUID user_id;
 
@@ -21,7 +22,6 @@ public class User {
     @Email
     private final String email;
 
-    // To retrieve data and create new user
     public User(@JsonProperty("username") String username,
                 @JsonProperty("password") String password,
                 @JsonProperty("email") String email) {
@@ -37,6 +37,33 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + "USER"));
+        return grantedAuthorities;
     }
 
     public String getPassword() {

@@ -8,25 +8,31 @@ import com.example.ogame.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private Logger logger = LoggerFactory.getLogger(UserService.class);
     private final VerifyDataAccess verifyDataAccess;
     private final UserDataAccess userDataAccess;
     private final BuildingDataAccess buildingDataAccess;
+    private final ApplicationUserDao applicationUserDao;
 
     @Autowired
     public UserService(VerifyDataAccess verifyDataAccess,
                        UserDataAccess userDataAccess,
-                       BuildingDataAccess buildingDataAccess) {
+                       BuildingDataAccess buildingDataAccess,
+                       ApplicationUserDao applicationUserDao) {
         this.verifyDataAccess = verifyDataAccess;
         this.userDataAccess = userDataAccess;
         this.buildingDataAccess = buildingDataAccess;
+        this.applicationUserDao = applicationUserDao;
     }
 
     public List<User> getAllUsers() {
@@ -94,6 +100,14 @@ public class UserService {
         }
 
         return userDataAccess.insertUserById(user_id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return applicationUserDao
+                .selectUserByUsername(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(String.format("Username %s not found", username)));
     }
 }
 
