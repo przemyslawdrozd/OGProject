@@ -4,6 +4,7 @@ import com.example.ogame.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,31 +34,36 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
+                .cors().disable()
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/*")
+                    .permitAll()
+                .antMatchers(HttpMethod.POST, "/user-api")
                     .permitAll()
                 .anyRequest()
                     .authenticated()
                 .and()
-                    .formLogin()
-                        .loginPage("/login")
-                        .permitAll()
-                        .defaultSuccessUrl("/mainpage", true)
-                        .passwordParameter("password")
-                        .usernameParameter("username")
-                .and()
-                    .rememberMe()
-                        .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(10))
-                        .key("key")
-                        .rememberMeParameter("remember-me")
-                .and()
-                    .logout()
-                        .logoutUrl("/logout")
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-                        .clearAuthentication(true)
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID", "remember-me")
-                        .logoutSuccessUrl("/login");
+                .httpBasic();
+//                .and()
+//                    .formLogin()
+//                        .loginPage("/login")
+//                        .permitAll()
+//                        .defaultSuccessUrl("/mainpage", true)
+//                        .passwordParameter("password")
+//                        .usernameParameter("username")
+//                .and()
+//                    .rememberMe()
+//                        .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(10))
+//                        .key("key")
+//                        .rememberMeParameter("remember-me")
+//                .and()
+//                    .logout()
+//                        .logoutUrl("/logout")
+//                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+//                        .clearAuthentication(true)
+//                        .invalidateHttpSession(true)
+//                        .deleteCookies("JSESSIONID", "remember-me")
+//                        .logoutSuccessUrl("/login");
     }
 
     @Override
