@@ -34,11 +34,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
-                .cors().disable()
+//                .cors().disable()
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/*")
                     .permitAll()
-                .antMatchers(HttpMethod.POST, "/user-api")
+                .antMatchers(HttpMethod.POST, "/user-api/")
                     .permitAll()
                 .anyRequest()
                     .authenticated()

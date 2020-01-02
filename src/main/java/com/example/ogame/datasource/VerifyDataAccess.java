@@ -21,12 +21,12 @@ public class VerifyDataAccess {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public boolean ifThisUserExists(String email, String password) {
-        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE email = ? AND password = ? )";
+    public boolean ifThisUserExists(String username, String password) {
+        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE username = ? AND password = ? )";
 
         return jdbcTemplate.queryForObject(
                 sql,
-                new Object[] {email, password},
+                new Object[] {username, password},
                 (resultSet, i) -> resultSet.getBoolean(1)
         );
     }

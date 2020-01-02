@@ -70,14 +70,14 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public User getUserByEmailPassword(String email, String password) {
+    public User getUserByUsernamePassword(String username, String password) {
 
         // if user dont exists
-        if (!verifyDataAccess.ifThisUserExists(email, password)) {
+        if (!verifyDataAccess.ifThisUserExists(username, password)) {
             logger.debug("This user does not exists");
             throw new ApiRequestException("Username or Password is not correct!");
         }
-        return userDataAccess.selectUserByEmailPassword(email, password);
+        return userDataAccess.selectUserByEmailPassword(username, password);
     }
 
     public UserInstance getUserInstanceByUserId(String userId) {

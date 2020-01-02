@@ -89,14 +89,14 @@ public class UserDataAccess implements ApplicationUserDao {
         );
     }
 
-    public User selectUserByEmailPassword(String email, String password) {
-        final String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+    public User selectUserByEmailPassword(String username, String password) {
+        final String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
         return jdbcTemplate.queryForObject(
                 sql,
-                new Object[]{email, password},
+                new Object[]{username, password},
                 (resultSet, i) -> {
                     UUID user_id = UUID.fromString(resultSet.getString("user_id"));
-                    String username = resultSet.getString("username");
+                    String email = resultSet.getString("email");
                     User user = new User(username, password, email);
                     user.setUser_id(user_id);
                     return user;

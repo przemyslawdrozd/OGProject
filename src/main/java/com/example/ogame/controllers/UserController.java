@@ -42,12 +42,12 @@ public class UserController {
         return userService.getUserInstanceByUserId(userId);
     }
 
-    @GetMapping(path = "/{email}/{password}")
-    public User loginUserByEmailPassword(
-            @PathVariable String email,
+    @GetMapping(path = "/{username}/{password}")
+    public User loginUserByUsernamePassword(
+            @PathVariable String username,
             @PathVariable String password) {
-        logger.info("GET loginUserByUsernamePassword: " + email + " " + password);
-        return userService.getUserByEmailPassword(email, password);
+        logger.info("GET loginUserByUsernamePassword: " + username + " " + password);
+        return userService.getUserByUsernamePassword(username, password);
     }
 
     @GetMapping(path = "/{user_id}/user")
