@@ -84,7 +84,8 @@ public class UserDataAccess implements ApplicationUserDao {
                 (resultSet, i) -> {
                     UUID resources_id = UUID.fromString(resultSet.getString("resource_id"));
                     UUID buildings_id = UUID.fromString(resultSet.getString("buildings_id"));
-                    return new UserInstance(user_id, resources_id, buildings_id);
+                    UUID fleet_id = UUID.fromString((resultSet.getString("fleet_id"))); // Do migration
+                    return new UserInstance(user_id, resources_id, buildings_id, fleet_id);
                 }
         );
     }
@@ -103,14 +104,16 @@ public class UserDataAccess implements ApplicationUserDao {
                 });
     }
 
-    public void insertNewInstance(UUID user_id, UUID resource_id, UUID buildings_id) {
-        final String sql = "INSERT INTO user_instance (user_id, resource_id, buildings_id) " +
-                "VALUES (?, ?, ?)";
+    // TODO 15 modify method by adding fleet id
+    public void insertNewInstance(UUID user_id, UUID resource_id, UUID buildings_id, UUID fleet_id) {
+        final String sql = "INSERT INTO user_instance (user_id, resource_id, buildings_id, fleet_id) " +
+                "VALUES (?, ?, ?, ?)";
         logger.info("insertNewInstance = " + sql);
         jdbcTemplate.update(sql,
                 user_id,
                 resource_id,
-                buildings_id);
+                buildings_id,
+                fleet_id);
     }
 
     public User insertUserById(UUID user_id) {

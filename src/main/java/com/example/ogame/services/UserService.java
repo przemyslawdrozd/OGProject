@@ -1,6 +1,7 @@
 package com.example.ogame.services;
 
 import com.example.ogame.datasource.BuildingDataAccess;
+import com.example.ogame.datasource.FleetDataAccess;
 import com.example.ogame.datasource.VerifyDataAccess;
 import com.example.ogame.datasource.UserDataAccess;
 import com.example.ogame.exeptions.ApiRequestException;
@@ -23,16 +24,19 @@ public class UserService implements UserDetailsService {
     private final UserDataAccess userDataAccess;
     private final BuildingDataAccess buildingDataAccess;
     private final ApplicationUserDao applicationUserDao;
+    private final FleetDataAccess fleetDataAccess;
 
     @Autowired
     public UserService(VerifyDataAccess verifyDataAccess,
                        UserDataAccess userDataAccess,
                        BuildingDataAccess buildingDataAccess,
-                       ApplicationUserDao applicationUserDao) {
+                       ApplicationUserDao applicationUserDao,
+                       FleetDataAccess fleetDataAccess) {
         this.verifyDataAccess = verifyDataAccess;
         this.userDataAccess = userDataAccess;
         this.buildingDataAccess = buildingDataAccess;
         this.applicationUserDao = applicationUserDao;
+        this.fleetDataAccess = fleetDataAccess;
     }
 
     public List<User> getAllUsers() {
@@ -46,6 +50,11 @@ public class UserService implements UserDetailsService {
         UUID user_id = UUID.randomUUID();
         UUID resource_id = UUID.randomUUID();
         UUID buildings_id = UUID.randomUUID();
+        // TODO 14 generate fleet id
+        UUID fleet_id = UUID.randomUUID();
+
+        // TODO 14.1 insert fleet by user id and add it to new instance
+        fleetDataAccess.insertFleet(fleet_id);
 
         // Assign new Resources
         userDataAccess.insertNewResourcesToNewUser(resource_id);
@@ -63,7 +72,8 @@ public class UserService implements UserDetailsService {
         userDataAccess.insertNewInstance(
                 user_id,
                 resource_id,
-                buildings_id);
+                buildings_id,
+                fleet_id);
 
         logger.info("New Instance created");
 
