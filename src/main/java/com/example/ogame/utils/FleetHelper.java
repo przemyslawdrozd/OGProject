@@ -2,15 +2,12 @@ package com.example.ogame.utils;
 
 import com.example.ogame.models.fleet.Ship;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.example.ogame.utils.ShipName.*;
 
-// TODO 10 Fleet Helper to create and manage Ships
 public class FleetHelper {
 
-    // TODO 10.1 List<Ship> that will return Ships
     public static List<Ship> createShips() {
 
        return List.of(
@@ -31,7 +28,6 @@ public class FleetHelper {
                );
     }
 
-    // TODO 15.3 get object array from ship
     public static Object[] insertShip(Ship ship) {
         return new Object[] {
                 ship.getShipId(),
@@ -48,8 +44,7 @@ public class FleetHelper {
         };
     }
 
-    // TODO 16.1 get object array of UUIDs from Map
-    public static Object[] insertFleet(Map<ShipName, UUID> shipMap) {
-        return shipMap.values().toArray();
+    public static Object[] insertFleet(List<UUID> shipsIdList) {
+        return shipsIdList.toArray();
     }
 }

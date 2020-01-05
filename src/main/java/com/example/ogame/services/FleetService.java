@@ -2,28 +2,31 @@ package com.example.ogame.services;
 
 import com.example.ogame.datasource.FleetDataAccess;
 import com.example.ogame.models.fleet.Ship;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 
-// TODO 2 Fleet service to retrieve data from api and send it to Database
 @Service
 public class FleetService {
 
     private final FleetDataAccess fleetDataAccess;
+    private final Logger logger = LoggerFactory.getLogger(FleetService.class);
 
     public FleetService(FleetDataAccess fleetDataAccess) {
         this.fleetDataAccess = fleetDataAccess;
     }
 
-    // TODO 8 Method that will return all ships
     public List<Ship> getFleet(UUID userId) {
-        // Get User fleet_id from instance
-//        fleetDataAccess.selectFleetId(userId);
-        // TODO 9* Fleet instance has list of all ships, maybe create some ships
+        return fleetDataAccess.selectFleet(userId);
+    }
 
-//        fleetDataAccess.SelectFleet(fleetId);
-        return null;
+    public Ship getShipByName(UUID userID, String shipName) {
+        return fleetDataAccess.selectShip(userID, shipName);
+    }
+
+    public void buildShip(UUID userID, String ship_name, int amount) {
+        // Logic is possible to build ship
     }
 }
