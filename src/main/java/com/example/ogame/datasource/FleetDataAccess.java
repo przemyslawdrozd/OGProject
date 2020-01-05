@@ -33,7 +33,7 @@ public class FleetDataAccess {
         logger.info("Fleet inserted");
     }
 
-    private void insertNewShip(Ship ship) {
+    public void insertNewShip(Ship ship) {
         final String sql = "INSERT INTO ship (" +
                 "ship_id, ship_name, attack, defense, speed, capacity, fuel, metal_cost, cristal_cost, deuterium_cost, amount_of_ship)" +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -48,12 +48,13 @@ public class FleetDataAccess {
         return ships;
     }
 
-    private Ship selectShipById(UUID ship_id) {
+    public Ship selectShipById(UUID ship_id) {
         final String sql = "SELECT * FROM ship WHERE ship_id = ?";
         return jdbcTemplate.queryForObject(
                 sql,
                 new Object[] {ship_id},
                 (rs, i) -> new Ship(
+                        UUID.fromString(rs.getString("ship_id")),
                         Enum.valueOf(ShipName.class, rs.getString("ship_name")),
                         rs.getInt("attack"),
                         rs.getInt("defense"),
@@ -101,5 +102,14 @@ public class FleetDataAccess {
                 sql,
                 new Object[]{fleetId},
                 (resultSet, i) -> selectShipById(UUID.fromString(resultSet.getString(shipName))));
+    }
+
+    public int updateShip(Ship ship) {
+        final String sql = "UPDATE ship SET amount_of_ship = ? WHERE ship_id = ?";
+        return jdbcTemplate.update(
+                sql,
+                ship.getAmountOfShip(),
+                ship.getShipId()
+        );
     }
 }

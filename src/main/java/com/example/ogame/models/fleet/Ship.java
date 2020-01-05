@@ -33,21 +33,7 @@ public class Ship {
         this.amountOfShip = amountOfShip;
     }
 
-    public Ship(ShipName name, int attack, int defense, int speed, int capacity, int fuel,
-                int metalCost, int cristalCost, int deuteriumCost, int amountOfShip) {
-        this.name = name;
-        this.attack = attack;
-        this.defense = defense;
-        this.speed = speed;
-        this.capacity = capacity;
-        this.fuel = fuel;
-        this.metalCost = metalCost;
-        this.cristalCost = cristalCost;
-        this.deuteriumCost = deuteriumCost;
-        this.amountOfShip = amountOfShip;
-    }
-
-    public void addNewShip(int amountOfShip) {
+    public void increaseAmountOfShips(int amountOfShip) {
         this.amountOfShip += amountOfShip;
     }
 

@@ -35,10 +35,10 @@ public class FleetController {
     }
 
     @PutMapping("/{user_id}/{ship_name}/{amount}")
-    public void buildShip(@PathVariable("user_id") String user_id,
+    public int buildShip(@PathVariable("user_id") String user_id,
                           @PathVariable("ship_name") String ship_name,
                           @PathVariable("amount") int amount) {
         UUID userID = UUID.fromString(user_id);
-        fleetService.buildShip(userID, ship_name, amount);
+        return fleetService.buildShip(userID, ship_name, amount);
     }
 }
