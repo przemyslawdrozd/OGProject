@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.util.*;
 
-// TODO 3 Repository of fleet to put data in Database
 @Repository
 public class FleetDataAccess {
 

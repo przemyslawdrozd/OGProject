@@ -9,7 +9,6 @@ public class UserInstance {
     private final UUID user_id;
     private final UUID resource_id;
     private final UUID buildings_id;
-    // TODO 14 add fleet id
     private final UUID fleet_id;
 
     public UserInstance(@JsonProperty("user_id") UUID user_id,

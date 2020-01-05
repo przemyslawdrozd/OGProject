@@ -50,10 +50,8 @@ public class UserService implements UserDetailsService {
         UUID user_id = UUID.randomUUID();
         UUID resource_id = UUID.randomUUID();
         UUID buildings_id = UUID.randomUUID();
-        // TODO 14 generate fleet id
         UUID fleet_id = UUID.randomUUID();
 
-        // TODO 14.1 insert fleet by user id and add it to new instance
         fleetDataAccess.insertFleet(fleet_id);
 
         // Assign new Resources

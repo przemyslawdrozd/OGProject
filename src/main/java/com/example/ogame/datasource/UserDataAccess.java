@@ -104,7 +104,6 @@ public class UserDataAccess implements ApplicationUserDao {
                 });
     }
 
-    // TODO 15 modify method by adding fleet id
     public void insertNewInstance(UUID user_id, UUID resource_id, UUID buildings_id, UUID fleet_id) {
         final String sql = "INSERT INTO user_instance (user_id, resource_id, buildings_id, fleet_id) " +
                 "VALUES (?, ?, ?, ?)";
