@@ -22,11 +22,11 @@ CREATE TABLE IF NOT EXISTS ship (
 CREATE TABLE IF NOT EXISTS fleet (
 
     fleet_id UUID NOT NULL PRIMARY KEY,
-    small_cargo_sheep_id UUID NOT NULL REFERENCES ship(ship_id),
-    large_cargo_sheep_id UUID NOT NULL REFERENCES ship(ship_id),
-    light_fighter_id UUID NOT NULL REFERENCES ship(ship_id),
-    battle_ship_id UUID NOT NULL REFERENCES ship(ship_id),
-    colony_ship_id UUID NOT NULL REFERENCES ship(ship_id)
+    small_cargo_ship UUID NOT NULL REFERENCES ship(ship_id),
+    large_cargo_ship UUID NOT NULL REFERENCES ship(ship_id),
+    light_fighter UUID NOT NULL REFERENCES ship(ship_id),
+    battle_ship UUID NOT NULL REFERENCES ship(ship_id),
+    colony_ship UUID NOT NULL REFERENCES ship(ship_id)
 );
 
 ALTER TABLE user_instance
