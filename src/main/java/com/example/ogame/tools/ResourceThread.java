@@ -41,7 +41,7 @@ public class ResourceThread implements ApplicationListener<ContextRefreshedEvent
      * @param contextRefreshedEvent starts event
      */
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+    public synchronized void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         logger.info("Init onApplicationEvent - update resources");
         ExecutorService exec = Executors.newFixedThreadPool(1);
         exec.submit(() -> {
