@@ -37,4 +37,8 @@ public class ResourceService {
 
         return resourceDataAccess.selectResourcesByUserId(userId);
     }
+
+    public void updateResources(Resources resources) {
+        resourceDataAccess.updateResources(resources);
+    }
 }

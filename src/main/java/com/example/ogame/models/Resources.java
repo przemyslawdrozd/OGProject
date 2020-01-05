@@ -35,6 +35,12 @@ public class Resources {
         this.deuterium += deuterium;
     }
 
+    public void utilizeForBuild(int metal, int cristal, int deuterium) {
+        this.metal -= metal;
+        this.cristal -= cristal;
+        this.deuterium -= deuterium;
+    }
+
     public UUID getResource_id() {
         return resource_id;
     }
