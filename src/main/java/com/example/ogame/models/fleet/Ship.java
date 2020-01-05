@@ -1,23 +1,17 @@
 package com.example.ogame.models.fleet;
 
 import com.example.ogame.utils.ShipName;
-
 import java.util.UUID;
 
-// TODO 4 Create the model of fleet api
 public class Ship {
 
-    // TODO 5 additional variable to help database
     private UUID shipId;
-
-    // TODO 11.1 name of ship
     private final ShipName name;
     private final int attack;
     private final int defense;
     private final int speed;
     private final int capacity;
     private final int fuel;
-
     private final int metalCost;
     private final int cristalCost;
     private final int deuteriumCost;
