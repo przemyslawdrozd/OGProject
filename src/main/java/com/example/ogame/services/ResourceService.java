@@ -19,12 +19,11 @@ public class ResourceService {
         this.resourceDataAccess = resourceDataAccess;
     }
 
-    public int addExtraResources(String userId) {
-        UUID user_id = UUID.fromString(userId);
-        if (!resourceDataAccess.ifUserIdExists(user_id))
+    public int addExtraResources(UUID userId) {
+        if (!resourceDataAccess.ifUserIdExists(userId))
             throw new ApiRequestException("Invalid user ID!");
 
-        Resources resources = resourceDataAccess.selectResourcesByUserId(user_id);
+        Resources resources = resourceDataAccess.selectResourcesByUserId(userId);
         resources.setMetal(resources.getMetal() + 1000);
         resources.setCristal(resources.getCristal() + 1000);
         resources.setDeuterium(resources.getDeuterium() + 1000);
@@ -32,11 +31,10 @@ public class ResourceService {
         return resourceDataAccess.updateResources(resources);
     }
 
-    public Resources getResources(String userId) {
-        UUID user_id = UUID.fromString(userId);
-        if (!resourceDataAccess.ifUserIdExists(user_id))
+    public Resources getResources(UUID userId) {
+        if (!resourceDataAccess.ifUserIdExists(userId))
             throw new ApiRequestException("Invalid user ID!");
 
-        return resourceDataAccess.selectResourcesByUserId(user_id);
+        return resourceDataAccess.selectResourcesByUserId(userId);
     }
 }

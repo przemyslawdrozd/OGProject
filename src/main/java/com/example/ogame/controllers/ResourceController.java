@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/resource-api")
 public class ResourceController {
@@ -20,14 +22,16 @@ public class ResourceController {
     }
 
     @GetMapping(path = "/{user_id}/resources")
-    public Resources getResourcesByUserId(@PathVariable("user_id") String userID) {
-        logger.info("GET resources - " + userID);
+    public Resources getResourcesByUserId(@PathVariable("user_id") String user_id) {
+        logger.info("GET resources - " + user_id);
+        UUID userID = UUID.fromString(user_id);
         return resourceService.getResources(userID);
     }
 
     @GetMapping(path = "/{user_id}/addextra")
-    public int addExtraResources(@PathVariable("user_id") String userID) {
-        logger.info("PUT Extra resources - " + userID);
-        return resourceService.addExtraResources(userID);
+    public int addExtraResources(@PathVariable("user_id") String user_id) {
+        logger.info("PUT Extra resources - " + user_id);
+        UUID userId = UUID.fromString(user_id);
+        return resourceService.addExtraResources(userId);
     }
 }
