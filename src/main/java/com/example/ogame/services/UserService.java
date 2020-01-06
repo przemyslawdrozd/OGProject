@@ -44,13 +44,12 @@ public class UserService implements UserDetailsService {
         return userDataAccess.selectAllUsers();
     }
 
-    // TODO find a issue with the same email:
-    // When user`s account is created with used email exception shows but instance is created
     public boolean createNewUser(User newUser) {
         UUID user_id = UUID.randomUUID();
         UUID resource_id = UUID.randomUUID();
         UUID buildings_id = UUID.randomUUID();
         UUID fleet_id = UUID.randomUUID();
+        verifyNewUser(newUser);
 
         fleetDataAccess.insertFleet(fleet_id);
 
@@ -80,7 +79,6 @@ public class UserService implements UserDetailsService {
 
     public User getUserByUsernamePassword(String username, String password) {
 
-        // if user dont exists
         if (!verifyDataAccess.ifThisUserExists(username, password)) {
             logger.debug("This user does not exists");
             throw new ApiRequestException("Username or Password is not correct!");
@@ -91,22 +89,19 @@ public class UserService implements UserDetailsService {
     public UserInstance getUserInstanceByUserId(String userId) {
         UUID user_id = UUID.fromString(userId);
 
-        // Verify User`s ID
-        if (!verifyDataAccess.ifUserIdExists(user_id)){
+        if (!verifyDataAccess.ifUserIdExists(user_id)) {
+            logger.warn("Wrong user id");
             throw new ApiRequestException("Invalid user ID!");
         }
-
         return userDataAccess.insertUserInstanceByUserId(user_id);
     }
 
     public User getUserById(String userId) {
         UUID user_id = UUID.fromString(userId);
-
-        // Verify User`s ID
         if (!verifyDataAccess.ifUserIdExists(user_id)){
+            logger.warn("Wrong User id");
             throw new ApiRequestException("Invalid user ID!");
         }
-
         return userDataAccess.insertUserById(user_id);
     }
 
@@ -117,18 +112,15 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException(String.format("Username %s not found", username)));
     }
+
+    private void verifyNewUser(User newUser) {
+        if (newUser.getUsername().length() < 3)
+            throw new ApiRequestException("Wrong username");
+        if (newUser.getPassword().length() < 3)
+            throw new ApiRequestException("Password it's to short");
+        if(userDataAccess.selectUserByUsername(newUser.getUsername()).isPresent())
+            throw new ApiRequestException("This username is taken");
+        if(verifyDataAccess.ifUserEmailExists(newUser.getEmail()))
+            throw new ApiRequestException("This email is taken");
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
