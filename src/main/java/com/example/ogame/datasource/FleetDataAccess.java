@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class FleetDataAccess {
@@ -68,22 +69,13 @@ public class FleetDataAccess {
                 ));
     }
 
-    // TODO Change It!!!!
     private List<UUID> getFleetIds(UUID fleet_id) {
         final String sql = "SELECT * FROM fleet WHERE fleet_id = ?";
-        List<UUID> shipsIdList = new ArrayList<>();
-        jdbcTemplate.queryForObject(
-                sql,
-                new Object[]{fleet_id},
-                (rs, i) -> {
-                    shipsIdList.add(UUID.fromString(rs.getString("small_cargo_ship")));
-                    shipsIdList.add(UUID.fromString(rs.getString("large_cargo_ship")));
-                    shipsIdList.add(UUID.fromString(rs.getString("light_fighter")));
-                    shipsIdList.add(UUID.fromString(rs.getString("battle_ship")));
-                    shipsIdList.add(UUID.fromString(rs.getString("colony_ship")));
-                    return null;
-                });
-        return shipsIdList;
+        return jdbcTemplate.queryForList(sql, fleet_id)
+                .get(0).values()
+                .stream().skip(1)
+                .map(id -> (UUID) id)
+                .collect(Collectors.toList());
     }
 
     private UUID getFleetId(UUID userId) {
