@@ -1,8 +1,12 @@
 package com.example.ogame.services;
 
 import com.example.ogame.datasource.FleetDataAccess;
+import com.example.ogame.datasource.VerifyDataAccess;
+import com.example.ogame.exeptions.ApiRequestException;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.fleet.Ship;
+import com.example.ogame.utils.ShipName;
+import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,23 +18,29 @@ public class FleetService {
 
     private final FleetDataAccess fleetDataAccess;
     private final ResourceService resourceService;
+    private final VerifyDataAccess verifyDataAccess;
     private final Logger logger = LoggerFactory.getLogger(FleetService.class);
 
-    public FleetService(FleetDataAccess fleetDataAccess, ResourceService resourceService) {
+    public FleetService(FleetDataAccess fleetDataAccess,
+                        ResourceService resourceService,
+                        VerifyDataAccess verifyDataAccess) {
         this.fleetDataAccess = fleetDataAccess;
         this.resourceService = resourceService;
+        this.verifyDataAccess = verifyDataAccess;
     }
 
     public List<Ship> getFleet(UUID userId) {
+        verifyFleetApi(userId);
         return fleetDataAccess.selectFleet(userId);
     }
 
-    public Ship getShipByName(UUID userID, String shipName) {
-        return fleetDataAccess.selectShip(userID, shipName);
+    public Ship getShipByName(UUID userId, String shipName) {
+        verifyFleetApi(userId, shipName);
+        return fleetDataAccess.selectShip(userId, shipName);
     }
 
     public int buildShip(UUID userID, String ship_name, int amount) {
-
+        verifyFleetApi(userID, ship_name);
         Resources resources = resourceService.getResources(userID);
         Ship ship = fleetDataAccess.selectShip(userID, ship_name);
         int build = verifyBuildShip(resources, ship, amount);
@@ -59,5 +69,22 @@ public class FleetService {
         }
         resourceService.updateResources(res);
         return amount;
+    }
+
+    private void verifyFleetApi(UUID userId, String shipName) {
+        if (!verifyDataAccess.ifUserIdExists(userId)) {
+            logger.warn("Wrong user id!");
+            throw new ApiRequestException("Invalid user ID!");
+        }
+        if (!EnumUtils.isValidEnum(ShipName.class, shipName)) {
+            logger.warn("Wrong Ship name!");
+            throw new ApiRequestException(shipName + " does not exists");
+        }
+    }
+    private void verifyFleetApi(UUID userId) {
+        if (!verifyDataAccess.ifUserIdExists(userId)) {
+            logger.warn("Wrong user id!");
+            throw new ApiRequestException("Invalid user ID!");
+        }
     }
 }
