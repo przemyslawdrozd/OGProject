@@ -1,13 +1,10 @@
 package com.example.ogame.datasource;
 
-import com.example.ogame.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -37,6 +34,16 @@ public class VerifyDataAccess {
         return jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{userID},
+                (resultSet, i) -> resultSet.getBoolean(1)
+        );
+    }
+
+    public boolean ifUserEmailExists(String email) {
+        final String sql = "SELECT EXISTS ( SELECT 1 FROM users WHERE email = ? )";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{email},
                 (resultSet, i) -> resultSet.getBoolean(1)
         );
     }
