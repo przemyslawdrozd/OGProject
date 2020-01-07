@@ -20,25 +20,27 @@ public class FleetController {
         this.fleetService = fleetService;
     }
 
-    @GetMapping("/{user_id}")
-    public List<Ship> GetAllFleet(@PathVariable("user_id") String user_id) {
-        logger.info("GET fleet - " + user_id);
-        UUID userId = UUID.fromString(user_id);
+    @GetMapping("/{id}")
+    public List<Ship> GetFleet(@PathVariable("id") String id) {
+        logger.info("GET fleet - " + id);
+        UUID userId = UUID.fromString(id);
         return fleetService.getFleet(userId);
     }
 
-    @GetMapping("/{user_id}/{ship_name}")
-    public Ship getShip(@PathVariable("user_id") String user_id,
-                        @PathVariable("ship_name") String ship_name) {
-        UUID userID = UUID.fromString(user_id);
-        return fleetService.getShipByName(userID, ship_name);
+    @GetMapping("/{id}/{shipName}")
+    public Ship getShip(@PathVariable("id") String id,
+                        @PathVariable("shipName") String shipName) {
+        UUID userId = UUID.fromString(id);
+        logger.info("GET ship - " + shipName);
+        return fleetService.getShipByName(userId, shipName);
     }
 
-    @PutMapping("/{user_id}/{ship_name}/{amount}")
-    public int buildShip(@PathVariable("user_id") String user_id,
-                          @PathVariable("ship_name") String ship_name,
+    @PutMapping("/{id}/{shipName}/{amount}")
+    public int buildShip(@PathVariable("id") String id,
+                          @PathVariable("shipName") String shipName,
                           @PathVariable("amount") int amount) {
-        UUID userID = UUID.fromString(user_id);
-        return fleetService.buildShip(userID, ship_name, amount);
+        UUID userId = UUID.fromString(id);
+        logger.info("PUT - try to build " + amount + " " + shipName);
+        return fleetService.buildShip(userId, shipName, amount);
     }
 }

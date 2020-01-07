@@ -43,10 +43,10 @@ public class FleetDataAccess {
     }
 
     public List<Ship> selectFleet(UUID userId) {
-        List<Ship> ships = new ArrayList<>();
-        List<UUID> fleetIds = getFleetIds(getFleetId(userId));
-        fleetIds.forEach(ship_id -> ships.add(selectShipById(ship_id)));
-        return ships;
+        return getShipIds(getFleetId(userId))
+                .stream()
+                .map(this::selectShipById)
+                .collect(Collectors.toList());
     }
 
     public Ship selectShipById(UUID ship_id) {
@@ -69,7 +69,7 @@ public class FleetDataAccess {
                 ));
     }
 
-    private List<UUID> getFleetIds(UUID fleet_id) {
+    private List<UUID> getShipIds(UUID fleet_id) {
         final String sql = "SELECT * FROM fleet WHERE fleet_id = ?";
         return jdbcTemplate.queryForList(sql, fleet_id)
                 .get(0).values()
@@ -93,7 +93,7 @@ public class FleetDataAccess {
         return jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{fleetId},
-                (resultSet, i) -> selectShipById(UUID.fromString(resultSet.getString(shipName))));
+                (rs, i) -> selectShipById(UUID.fromString(rs.getString(shipName))));
     }
 
     public int updateShip(Ship ship) {
