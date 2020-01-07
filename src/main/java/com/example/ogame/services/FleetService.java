@@ -19,7 +19,7 @@ public class FleetService {
     private final FleetDataAccess fleetDataAccess;
     private final ResourceService resourceService;
     private final VerifyDataAccess verifyDataAccess;
-    private final Logger logger = LoggerFactory.getLogger(FleetService.class);
+//    private final Logger logger = LoggerFactory.getLogger(FleetService.class);
 
     public FleetService(FleetDataAccess fleetDataAccess,
                         ResourceService resourceService,
@@ -49,7 +49,7 @@ public class FleetService {
             ship.increaseAmountOfShips(build);
             fleetDataAccess.updateShip(ship);
         }
-        logger.info(build + " " + ship.getName() + " has been built");
+//        logger.info(build + " " + ship.getName() + " has been built");
         return build;
     }
 
@@ -73,17 +73,17 @@ public class FleetService {
 
     private void verifyFleetApi(UUID userId, String shipName) {
         if (!verifyDataAccess.ifUserIdExists(userId)) {
-            logger.warn("Wrong user id!");
+//            logger.warn("Wrong user id!");
             throw new ApiRequestException("Invalid user ID!");
         }
         if (!EnumUtils.isValidEnum(ShipName.class, shipName)) {
-            logger.warn("Wrong Ship name!");
+//            logger.warn("Wrong Ship name!");
             throw new ApiRequestException(shipName + " does not exists");
         }
     }
     private void verifyFleetApi(UUID userId) {
         if (!verifyDataAccess.ifUserIdExists(userId)) {
-            logger.warn("Wrong user id!");
+//            logger.warn("Wrong user id!");
             throw new ApiRequestException("Invalid user ID!");
         }
     }
