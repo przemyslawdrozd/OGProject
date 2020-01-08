@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/building-api")
@@ -22,22 +22,25 @@ public class BuildingController {
         this.buildingsService = buildingsService;
     }
 
-    @GetMapping("/{user_id}/buildings")
-    public List<? extends Building> getListOfBuildings(@PathVariable("user_id") String userID) {
-        logger.info("GET listOfBuildings - " + userID);
-        return buildingsService.getBuildings(userID);
+    @GetMapping("/{id}/")
+    public List<Building> getListOfBuildings(@PathVariable("id") String id) {
+        logger.info("GET listOfBuildings - " + id);
+        UUID userId = UUID.fromString(id);
+        return buildingsService.getBuildings(userId);
     }
 
-    @GetMapping("/{user_id}/building/{building_name}")
-    public Building getBuilding(@PathVariable("user_id") String userID,
-                                @PathVariable("building_name") String b_name) {
-        return buildingsService.getBuildingByName(userID, b_name);
+    @GetMapping("/{id}/{buildingName}")
+    public Building getBuilding(@PathVariable("id") String id,
+                                @PathVariable("buildingName") String buildingName) {
+        UUID userId = UUID.fromString(id);
+        return buildingsService.getBuildingByName(userId, buildingName);
     }
 
-    @PutMapping("/{user_id}/building/{building_name}")
-    public Boolean lvlUpMetal(@PathVariable("user_id") String userID,
-                              @PathVariable("building_name") String b_name) {
-        logger.info("PUT " + b_name + " lvl up - " + userID);
-        return buildingsService.lvlUpMetal(userID, b_name);
+    @PutMapping("/{id}/{buildingName}")
+    public Boolean lvlUpBuilding(@PathVariable("id") String id,
+                                 @PathVariable("buildingName") String buildingName) {
+        logger.info("PUT " + buildingName + " lvl up - " + id);
+        UUID userId = UUID.fromString(id);
+        return buildingsService.lvlUpBuilding(userId, buildingName);
     }
 }

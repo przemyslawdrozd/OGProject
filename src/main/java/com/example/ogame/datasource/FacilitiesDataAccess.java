@@ -1,0 +1,119 @@
+package com.example.ogame.datasource;
+
+import com.example.ogame.models.facilities.Building;
+import com.example.ogame.models.facilities.Facilities;
+import com.example.ogame.utils.BuildingName;
+import com.example.ogame.utils.FacilitiesHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Repository
+public class FacilitiesDataAccess {
+
+    private final JdbcTemplate jdbcTemplate;
+    private Logger logger = LoggerFactory.getLogger(FacilitiesDataAccess.class);
+
+    @Autowired
+    public FacilitiesDataAccess(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void insertFacilities(UUID facilitiesId) {
+        List<Building> buildingList = FacilitiesHelper.createFacilities();
+        Facilities facilities = new Facilities(facilitiesId, buildingList);
+        buildingList.forEach(this::insertNewBuilding);
+        logger.info("Buildings inserted");
+
+        final String sql = "INSERT INTO facilities VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, FacilitiesHelper.insertFacilities(facilities.getBuildingList()));
+    }
+
+    public void insertNewBuilding(Building building) {
+        final String sql = "INSERT INTO building (" +
+                "building_id, building_name, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?)";
+        logger.info("insertNewBuilding - " + sql);
+        jdbcTemplate.update(sql, FacilitiesHelper.insertBuilding(building));
+    }
+
+    public List<Building> selectFacilities(UUID userId) {
+        return getBuildingIds(getFacilitiesId(userId))
+                .stream()
+                .map(this::selectBuildingById)
+                .collect(Collectors.toList());
+    }
+
+    private List<UUID> getBuildingIds(UUID facilitiesId) {
+        final String sql = "SELECT * FROM facilities WHERE facilities_id = ?";
+        return jdbcTemplate.queryForList(sql, facilitiesId)
+                .get(0).values()
+                .stream().skip(1)
+                .map(id -> (UUID) id)
+                .collect(Collectors.toList());
+    }
+
+    private UUID getFacilitiesId(UUID userId) {
+        final String sql = "SELECT facilities_id FROM user_instance WHERE user_id = ?";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {userId},
+                (rs, i) -> UUID.fromString(rs.getString("facilities_id")));
+    }
+
+    public Building selectBuildingById(UUID buildingId) {
+        final String sql = "SELECT * FROM building WHERE building_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {buildingId},
+                getBuildingRowMapper()
+        );
+    }
+
+    private RowMapper<Building> getBuildingRowMapper() {
+        return (rs, i) -> new Building(
+                UUID.fromString(rs.getString("building_id")),
+                Enum.valueOf(BuildingName.class, rs.getString("building_name")),
+                rs.getInt("lvl"),
+                rs.getInt("needed_metal"),
+                rs.getInt("needed_cristal"),
+                rs.getInt("needed_deuterium"),
+                rs.getInt("build_time"),
+                rs.getInt("production_per_hour"));
+    }
+
+    public Building selectBuilding(UUID userId, String buildingName) {
+        UUID facilitiesId = getFacilitiesId(userId);
+        final String sql = "SELECT " + buildingName +
+                " FROM facilities WHERE facilities_id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {facilitiesId},
+                (rs, i) -> selectBuildingById(UUID.fromString(rs.getString(buildingName)))
+        );
+    }
+
+    public int updateBuilding(Building building) {
+        final String sql = "UPDATE building " +
+                "SET lvl = ?, needed_metal = ?, needed_cristal = ?, needed_deuterium = ?" +
+                "WHERE building_id = ?";
+        logger.info("UPDATE buildingLvlUp SQL = " + sql);
+        return jdbcTemplate.update(
+                sql,
+                building.getLevel(),
+                building.getNeededMetal(),
+                building.getNeededCristal(),
+                building.getNeededDeuterium(),
+                building.getBuildingId());
+    }
+}

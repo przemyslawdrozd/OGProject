@@ -1,11 +1,12 @@
 package com.example.ogame.models.facilities;
 
+import com.example.ogame.utils.BuildingName;
 import java.util.UUID;
 
 public class Building {
 
-    private final UUID building_id;
-    private final String name;
+    private UUID buildingId;
+    private final BuildingName name;
     private int level;
     private int neededMetal;
     private int neededCristal;
@@ -13,8 +14,8 @@ public class Building {
     private int buildTime;
     private int productionPerHour;
 
-    public Building(UUID building_id,
-                    String name,
+    public Building(UUID buildingId,
+                    BuildingName name,
                     int level,
                     int neededMetal,
                     int neededCristal,
@@ -22,7 +23,7 @@ public class Building {
                     int buildTime,
                     int productionPerHour) {
 
-        this.building_id = building_id;
+        this.buildingId = buildingId;
         this.name = name;
         this.level = level;
         this.neededMetal = neededMetal;
@@ -41,6 +42,7 @@ public class Building {
         this.neededDeuterium *= increaseCost;
 
         if (productionPerHour != 0) {
+            // TODO Change production per lvl
             this.productionPerHour *= 1.25;
         }
     }
@@ -77,12 +79,12 @@ public class Building {
         this.neededDeuterium = neededDeuterium;
     }
 
-    public String getName() {
+    public BuildingName getName() {
         return name;
     }
 
-    public UUID getBuilding_id() {
-        return building_id;
+    public UUID getBuildingId() {
+        return buildingId;
     }
 
     public int getBuildTime() {

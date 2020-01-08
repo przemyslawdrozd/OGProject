@@ -1,6 +1,6 @@
 package com.example.ogame.services;
 
-import com.example.ogame.datasource.BuildingDataAccess;
+import com.example.ogame.datasource.FacilitiesDataAccess;
 import com.example.ogame.datasource.ResourceDataAccess;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.facilities.Building;
@@ -16,31 +16,29 @@ import java.util.UUID;
 public class BuildingsService {
 
     private Logger logger = LoggerFactory.getLogger(BuildingsService.class);
-    private final BuildingDataAccess buildingDataAccess;
+    private final FacilitiesDataAccess facilitiesDataAccess;
     private final ResourceDataAccess resourceDataAccess;
 
     @Autowired
-    public BuildingsService(BuildingDataAccess buildingDataAccess,
+    public BuildingsService(FacilitiesDataAccess facilitiesDataAccess,
                             ResourceDataAccess resourceDataAccess) {
-        this.buildingDataAccess = buildingDataAccess;
+        this.facilitiesDataAccess = facilitiesDataAccess;
         this.resourceDataAccess = resourceDataAccess;
     }
 
-    public List<? extends Building> getBuildings(String userID) {
-        logger.info("getBuildings from " + userID);
-        UUID user_id = UUID.fromString(userID);
-        return buildingDataAccess.selectListOfBuildings(user_id);
+    public List<Building> getBuildings(UUID userId) {
+        logger.info("getBuildings from " + userId);
+        return facilitiesDataAccess.selectFacilities(userId);
     }
 
-    public Building getBuildingByName(String userID, String b_name) {
-        UUID user_id = UUID.fromString(userID);
-         return buildingDataAccess.selectBuildingByUserIdAndBuildingName(user_id, b_name);
+    public Building getBuildingByName(UUID userId, String buildingName) {
+
+        return facilitiesDataAccess.selectBuilding(userId, buildingName);
     }
 
-    public boolean lvlUpMetal(String userID, String b_name) {
-        UUID user_id = UUID.fromString(userID);
-        Building building = buildingDataAccess.selectBuildingByUserIdAndBuildingName(user_id, b_name);
-        Resources resources =  resourceDataAccess.selectResourcesByUserId(user_id);
+    public boolean lvlUpBuilding(UUID userId, String buildingName) {
+        Building building = facilitiesDataAccess.selectBuilding(userId, buildingName);
+        Resources resources =  resourceDataAccess.selectResourcesByUserId(userId);
 
         if (building.getNeededMetal() < resources.getMetal() &&
                 building.getNeededCristal() < resources.getCristal()) {
@@ -57,7 +55,7 @@ public class BuildingsService {
                     resources.getCristal(),
                     resources.getDeuterium()));
 
-            buildingDataAccess.updateBuilding(building);
+            facilitiesDataAccess.updateBuilding(building);
             return true;
         }
         return false;
