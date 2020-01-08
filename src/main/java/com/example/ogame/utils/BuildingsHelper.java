@@ -1,7 +1,7 @@
 package com.example.ogame.utils;
 
-import com.example.ogame.models.building.Building;
-import com.example.ogame.models.building.ResourceBuilding;
+import com.example.ogame.models.facilities.Building;
+import com.example.ogame.models.facilities.ResourceBuilding;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

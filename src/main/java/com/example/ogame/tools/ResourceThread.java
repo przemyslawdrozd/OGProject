@@ -4,7 +4,7 @@ import com.example.ogame.datasource.BuildingDataAccess;
 import com.example.ogame.datasource.ResourceDataAccess;
 import com.example.ogame.datasource.UserDataAccess;
 import com.example.ogame.models.Resources;
-import com.example.ogame.models.building.ResourceBuilding;
+import com.example.ogame.models.facilities.ResourceBuilding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

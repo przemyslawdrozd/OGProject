@@ -1,8 +1,8 @@
 package com.example.ogame.datasource;
 
-import com.example.ogame.models.building.Building;
-import com.example.ogame.models.building.BuildingInstance;
-import com.example.ogame.models.building.ResourceBuilding;
+import com.example.ogame.models.facilities.Building;
+import com.example.ogame.models.facilities.BuildingInstance;
+import com.example.ogame.models.facilities.ResourceBuilding;
 import com.example.ogame.utils.BuildingsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

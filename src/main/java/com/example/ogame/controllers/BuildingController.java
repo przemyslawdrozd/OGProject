@@ -1,6 +1,6 @@
 package com.example.ogame.controllers;
 
-import com.example.ogame.models.building.Building;
+import com.example.ogame.models.facilities.Building;
 import com.example.ogame.services.BuildingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

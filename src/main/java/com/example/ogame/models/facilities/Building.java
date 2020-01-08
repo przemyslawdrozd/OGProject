@@ -1,39 +1,26 @@
-package com.example.ogame.models.building;
+package com.example.ogame.models.facilities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class Building {
 
     private final UUID building_id;
-
-    @NotNull
     private final String name;
-
-    @NotNull
     private int level;
-
-    @NotNull
     private int neededMetal;
-
-    @NotNull
     private int neededCristal;
-
-    @NotNull
     private int neededDeuterium;
-
-    @NotNull
     private int buildTime;
+    private int productionPerHour;
 
-    public Building(@JsonProperty("building_id") UUID building_id,
-                    @JsonProperty("name") String name,
-                    @JsonProperty("level") int level,
-                    @JsonProperty("neededMetal") int neededMetal,
-                    @JsonProperty("neededCristal") int neededCristal,
-                    @JsonProperty("neededDeuterium") int neededDeuterium,
-                    @JsonProperty("build_time") int buildTime) {
+    public Building(UUID building_id,
+                    String name,
+                    int level,
+                    int neededMetal,
+                    int neededCristal,
+                    int neededDeuterium,
+                    int buildTime,
+                    int productionPerHour) {
 
         this.building_id = building_id;
         this.name = name;
@@ -42,6 +29,7 @@ public class Building {
         this.neededCristal = neededCristal;
         this.neededDeuterium = neededDeuterium;
         this.buildTime = buildTime;
+        this.productionPerHour = productionPerHour;
     }
 
     public void lvlUpBuilding(){
@@ -51,6 +39,10 @@ public class Building {
         this.neededMetal *= increaseCost;
         this.neededCristal *= increaseCost;
         this.neededDeuterium *= increaseCost;
+
+        if (productionPerHour != 0) {
+            this.productionPerHour *= 1.25;
+        }
     }
 
     public int getLevel() {
@@ -99,5 +91,13 @@ public class Building {
 
     public void setBuildTime(int buildTime) {
         this.buildTime = buildTime;
+    }
+
+    public int getProductionPerHour() {
+        return productionPerHour;
+    }
+
+    public void setProductionPerHour(int productionPerHour) {
+        this.productionPerHour = productionPerHour;
     }
 }
