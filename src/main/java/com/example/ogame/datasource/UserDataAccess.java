@@ -18,10 +18,10 @@ import java.util.UUID;
 
 @Repository
 public class UserDataAccess implements ApplicationUserDao {
+    private Logger logger = LoggerFactory.getLogger(UserDataAccess.class);
 
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
-    private Logger logger = LoggerFactory.getLogger(UserDataAccess.class);
 
     @Autowired
     public UserDataAccess(JdbcTemplate jdbcTemplate,
@@ -33,7 +33,6 @@ public class UserDataAccess implements ApplicationUserDao {
     public List<User> selectAllUsers() {
         final String sql = "SELECT user_id, username, password, email FROM users";
         logger.trace("selectAllStudents - " + sql);
-
         return jdbcTemplate.query(
                 sql,
                 getUserFromDb());
@@ -41,52 +40,49 @@ public class UserDataAccess implements ApplicationUserDao {
 
     public List<UUID> selectAllUsersUUID() {
         final String sql = "SELECT user_id FROM users";
-
         return jdbcTemplate.query(
                 sql,
                 (rs, i) -> UUID.fromString(rs.getString("user_id")));
     }
 
-    public int insertNewResourcesToNewUser(UUID resource_id) {
+    public int insertNewResourcesToNewUser(UUID resourceId) {
         final String sql = "INSERT INTO resources (" +
                 "resource_id, metal, cristal, deuterium) " +
                 "VALUES (?, ?, ?, ?)";
         logger.info("insertNewResourcesToNewUser - " + sql);
-        Resources resources = new Resources(resource_id, 500, 500, 0);
-
+        Resources res = new Resources(resourceId, 500, 500, 0);
         return jdbcTemplate.update(
                 sql,
-                resource_id,
-                resources.getMetal(),
-                resources.getCristal(),
-                resources.getDeuterium());
+                resourceId,
+                res.getMetal(),
+                res.getCristal(),
+                res.getDeuterium());
     }
 
-    public void insertUser(UUID user_id, User newUser) {
+    public void insertUser(UUID userId, User newUser) {
         final String sql = "INSERT INTO users (user_id, username, password, email) VALUES (?, ?, ?, ?)";
         logger.info("insertUser - " + sql);
         jdbcTemplate.update(
                 sql,
-                user_id,
+                userId,
                 newUser.getUsername(),
                 newUser.getPassword(),
                 newUser.getEmail());
     }
 
-    public UserInstance insertUserInstanceByUserId(UUID user_id) {
+    public UserInstance insertUserInstanceByUserId(UUID userId) {
         final String sql = "SELECT * FROM users " +
                 "JOIN user_instance USING (user_id) " +
                 "WHERE users.user_id = ?";
         logger.info("SQL = " + sql);
         return jdbcTemplate.queryForObject(
                 sql,
-                new Object[] {user_id},
-                (resultSet, i) -> {
-                    UUID resId = UUID.fromString(resultSet.getString("resource_id"));
-                    UUID facId = UUID.fromString(resultSet.getString("facilities_id"));
-                    UUID fleetId = UUID.fromString((resultSet.getString("fleet_id")));
-                    return new UserInstance(user_id, resId, facId, fleetId);
-                }
+                new Object[]{userId},
+                (resultSet, i) -> new UserInstance(
+                        userId,
+                        UUID.fromString(resultSet.getString("resource_id")),
+                        UUID.fromString(resultSet.getString("facilities_id")),
+                        UUID.fromString((resultSet.getString("fleet_id"))))
         );
     }
 
@@ -104,15 +100,11 @@ public class UserDataAccess implements ApplicationUserDao {
                 });
     }
 
-    public void insertNewInstance(UUID user_id, UUID resource_id, UUID facilitiesId, UUID fleet_id) {
+    public void insertNewInstance(UUID userId, UUID resourceId, UUID facilitiesId, UUID fleetId) {
         final String sql = "INSERT INTO user_instance (user_id, resource_id, facilities_id, fleet_id) " +
                 "VALUES (?, ?, ?, ?)";
         logger.info("insertNewInstance = " + sql);
-        jdbcTemplate.update(sql,
-                user_id,
-                resource_id,
-                facilitiesId,
-                fleet_id);
+        jdbcTemplate.update(sql, userId, resourceId, facilitiesId, fleetId);
     }
 
     public User insertUserById(UUID user_id) {
@@ -121,7 +113,7 @@ public class UserDataAccess implements ApplicationUserDao {
         logger.info("GET user: " + sql);
         return jdbcTemplate.queryForObject(
                 sql,
-                new Object[] {user_id},
+                new Object[]{user_id},
                 (resultSet, i) -> {
                     String username = resultSet.getString("username");
                     String email = resultSet.getString("username");
@@ -136,13 +128,10 @@ public class UserDataAccess implements ApplicationUserDao {
     @Override
     public Optional<User> selectUserByUsername(String username) {
         final String sql = "SELECT * FROM users WHERE username = ?";
-
         return jdbcTemplate.query(
                 sql,
                 new Object[]{username},
-                getUserFromDb()
-        )
-                .stream()
+                getUserFromDb()).stream()
                 .filter(user -> username.equals(user.getUsername())).findFirst();
     }
 
