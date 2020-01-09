@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user-api")
@@ -36,9 +37,10 @@ public class UserController {
         return userService.createNewUser(newUser);
     }
 
-    @GetMapping(path = "/{user_id}")
-    public UserInstance getUserInstanceByUserId(@PathVariable("user_id") String userId) {
-        logger.info("GET userInstanceByUserId - " + userId);
+    @GetMapping(path = "/{id}")
+    public UserInstance getUserInstanceByUserId(@PathVariable("id") String id) {
+        logger.info("GET userInstanceByUserId - " + id);
+        UUID userId = UUID.fromString(id);
         return userService.getUserInstanceByUserId(userId);
     }
 
@@ -50,9 +52,10 @@ public class UserController {
         return userService.getUserByUsernamePassword(username, password);
     }
 
-    @GetMapping(path = "/{user_id}/user")
-    public User getUserById(@PathVariable("user_id") String userId) {
-        logger.info("GET user by id - " + userId);
+    @GetMapping(path = "/user/{id}")
+    public User getUserById(@PathVariable("id") String id) {
+        logger.info("GET user by id - " + id);
+        UUID userId = UUID.fromString(id);
         return userService.getUserById(userId);
     }
 }

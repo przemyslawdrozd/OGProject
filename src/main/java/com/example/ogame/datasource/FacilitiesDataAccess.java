@@ -2,8 +2,8 @@ package com.example.ogame.datasource;
 
 import com.example.ogame.models.facilities.Building;
 import com.example.ogame.models.facilities.Facilities;
-import com.example.ogame.utils.fleet.BuildingName;
-import com.example.ogame.utils.fleet.FacilitiesHelper;
+import com.example.ogame.utils.facilities.BuildingName;
+import com.example.ogame.utils.facilities.FacilitiesHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,15 +105,9 @@ public class FacilitiesDataAccess {
 
     public int updateBuilding(Building building) {
         final String sql = "UPDATE building " +
-                "SET lvl = ?, needed_metal = ?, needed_cristal = ?, needed_deuterium = ?" +
+                "SET lvl = ?, needed_metal = ?, needed_cristal = ?, needed_deuterium = ?, production_per_hour = ?" +
                 "WHERE building_id = ?";
         logger.info("UPDATE buildingLvlUp SQL = " + sql);
-        return jdbcTemplate.update(
-                sql,
-                building.getLevel(),
-                building.getNeededMetal(),
-                building.getNeededCristal(),
-                building.getNeededDeuterium(),
-                building.getBuildingId());
+        return jdbcTemplate.update(sql, FacilitiesHelper.updateBuilding(building));
     }
 }

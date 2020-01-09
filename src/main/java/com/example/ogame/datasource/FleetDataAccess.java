@@ -3,7 +3,7 @@ package com.example.ogame.datasource;
 import com.example.ogame.models.fleet.Fleet;
 import com.example.ogame.models.fleet.Ship;
 import com.example.ogame.utils.fleet.FleetHelper;
-import com.example.ogame.utils.facilities.ShipName;
+import com.example.ogame.utils.fleet.ShipName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;

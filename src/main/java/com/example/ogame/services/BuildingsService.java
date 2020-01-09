@@ -2,8 +2,10 @@ package com.example.ogame.services;
 
 import com.example.ogame.datasource.FacilitiesDataAccess;
 import com.example.ogame.datasource.ResourceDataAccess;
+import com.example.ogame.exeptions.ApiRequestException;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.facilities.Building;
+import com.example.ogame.utils.facilities.FacilitiesRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,37 +16,47 @@ import java.util.UUID;
 
 @Service
 public class BuildingsService {
-
     private Logger logger = LoggerFactory.getLogger(BuildingsService.class);
     private final FacilitiesDataAccess facilitiesDataAccess;
     private final ResourceDataAccess resourceDataAccess;
+    private final FacilitiesRule facilitiesRule;
 
     @Autowired
     public BuildingsService(FacilitiesDataAccess facilitiesDataAccess,
-                            ResourceDataAccess resourceDataAccess) {
+                            ResourceDataAccess resourceDataAccess,
+                            FacilitiesRule facilitiesRule) {
         this.facilitiesDataAccess = facilitiesDataAccess;
         this.resourceDataAccess = resourceDataAccess;
+        this.facilitiesRule = facilitiesRule;
     }
 
     public List<Building> getBuildings(UUID userId) {
         logger.info("getBuildings from " + userId);
+        facilitiesRule.verifyUser(userId);
         return facilitiesDataAccess.selectFacilities(userId);
     }
 
     public Building getBuildingByName(UUID userId, String buildingName) {
-
+        facilitiesRule.verifyFacilitiesApi(userId, buildingName);
         return facilitiesDataAccess.selectBuilding(userId, buildingName);
     }
 
+    // TODO Change boolean and Throw Exception if not enough resources
     public boolean lvlUpBuilding(UUID userId, String buildingName) {
+        facilitiesRule.verifyFacilitiesApi(userId, buildingName);
+
         Building building = facilitiesDataAccess.selectBuilding(userId, buildingName);
         Resources resources =  resourceDataAccess.selectResourcesByUserId(userId);
 
         if (building.getNeededMetal() < resources.getMetal() &&
-                building.getNeededCristal() < resources.getCristal()) {
+                building.getNeededCristal() < resources.getCristal() &&
+                building.getNeededDeuterium() < resources.getDeuterium()) {
 
-            resources.setMetal(resources.getMetal() - building.getNeededMetal());
-            resources.setCristal(resources.getCristal() - building.getNeededCristal());
+            resources.utilizeForBuild(
+                    building.getNeededMetal(),
+                    building.getNeededCristal(),
+                    building.getNeededDeuterium()
+            );
 
             building.lvlUpBuilding();
             logger.info(building.getName() + " has been lvl up : " + building.getLevel());
@@ -58,7 +70,7 @@ public class BuildingsService {
             facilitiesDataAccess.updateBuilding(building);
             return true;
         }
-        return false;
+        throw new ApiRequestException("Not enough resources!");
     }
 
 }
