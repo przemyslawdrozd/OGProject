@@ -1,6 +1,6 @@
 package com.example.ogame.models.facilities;
 
-import com.example.ogame.utils.fleet.BuildingName;
+import com.example.ogame.utils.facilities.BuildingName;
 import java.util.UUID;
 
 public class Building {

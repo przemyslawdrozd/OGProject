@@ -1,10 +1,10 @@
-package com.example.ogame.utils.fleet;
+package com.example.ogame.utils.facilities;
 
 import com.example.ogame.models.facilities.Building;
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.ogame.utils.fleet.BuildingName.*;
+import static com.example.ogame.utils.facilities.BuildingName.*;
 
 public class FacilitiesHelper {
 
@@ -64,6 +64,17 @@ public class FacilitiesHelper {
                 building.getNeededDeuterium(),
                 building.getBuildTime(),
                 building.getProductionPerHour()
+        };
+    }
+
+    public static Object[] updateBuilding(Building b) {
+        return new Object[] {
+                b.getLevel(),
+                b.getNeededMetal(),
+                b.getNeededCristal(),
+                b.getNeededDeuterium(),
+                b.getProductionPerHour(),
+                b.getBuildingId()
         };
     }
 

@@ -1,4 +1,4 @@
-package com.example.ogame.utils.facilities;
+package com.example.ogame.utils.fleet;
 
 public enum ShipName {
     SMALL_CARGO_SHIP,

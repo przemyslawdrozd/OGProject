@@ -4,7 +4,7 @@ import com.example.ogame.models.fleet.Ship;
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.ogame.utils.facilities.ShipName.*;
+import static com.example.ogame.utils.fleet.ShipName.*;
 
 public class FleetHelper {
 
