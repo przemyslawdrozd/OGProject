@@ -1,10 +1,10 @@
 package com.example.ogame.tools;
 
-import com.example.ogame.datasource.BuildingDataAccess;
+import com.example.ogame.datasource.FacilitiesDataAccess;
 import com.example.ogame.datasource.ResourceDataAccess;
 import com.example.ogame.datasource.UserDataAccess;
 import com.example.ogame.models.Resources;
-import com.example.ogame.models.facilities.ResourceBuilding;
+import com.example.ogame.models.facilities.Building;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +24,15 @@ public class ResourceThread implements ApplicationListener<ContextRefreshedEvent
 
     private final ResourceDataAccess resourceDataAccess;
     private final UserDataAccess userDataAccess;
-    private final BuildingDataAccess buildingDataAccess;
+    private final FacilitiesDataAccess facilitiesDataAccess;
 
     @Autowired
     public ResourceThread(ResourceDataAccess resourceDataAccess,
                           UserDataAccess userDataAccess,
-                          BuildingDataAccess buildingDataAccess) {
+                          FacilitiesDataAccess facilitiesDataAccess) {
         this.resourceDataAccess = resourceDataAccess;
         this.userDataAccess = userDataAccess;
-        this.buildingDataAccess = buildingDataAccess;
+        this.facilitiesDataAccess = facilitiesDataAccess;
     }
 
     /**
@@ -51,7 +51,7 @@ public class ResourceThread implements ApplicationListener<ContextRefreshedEvent
                 final List<UUID> listOfUserIds = userDataAccess.selectAllUsersUUID();
 //                logger.info("Number of users: " + listOfUserIds.size());
                 int amountOfUsers = listOfUserIds.size();
-                if (startFlag) { // init start
+                if (startFlag && amountOfUsers > 1) { // init start
                     ExecutorService executorService = Executors.newFixedThreadPool(amountOfUsers);
                     for (UUID user_id : listOfUserIds) {
                         executorService.submit(() -> singleUpdateResThread(user_id));
@@ -73,14 +73,14 @@ public class ResourceThread implements ApplicationListener<ContextRefreshedEvent
      * This method retrieves users's resources and production per hour from every resources building
      * Next increase values of resources depend of Mines' levels
      * Updated Resources update in database
-     * @param user_id user's id
+     * @param userId user's id
      */
-    private void singleUpdateResThread(UUID user_id) {
+    private void singleUpdateResThread(UUID userId) {
         while (true) {
-            Resources resources = resourceDataAccess.selectResourcesByUserId(user_id);
-            ResourceBuilding metal = (ResourceBuilding) buildingDataAccess.selectBuildingByUserIdAndBuildingName(user_id, "Metal Mine");
-            ResourceBuilding cristal = (ResourceBuilding) buildingDataAccess.selectBuildingByUserIdAndBuildingName(user_id, "Cristal Mine");
-            ResourceBuilding deuterium = (ResourceBuilding) buildingDataAccess.selectBuildingByUserIdAndBuildingName(user_id, "Deuterium Synthesizer");
+            Resources resources = resourceDataAccess.selectResourcesByUserId(userId);
+            Building metal = facilitiesDataAccess.selectBuilding(userId, "METAL_MINE");
+            Building cristal =  facilitiesDataAccess.selectBuilding(userId, "CRISTAL_MINE");
+            Building deuterium = facilitiesDataAccess.selectBuilding(userId, "DEUTERIUM_MINE");
 
             resources.updatePerSec(
                     metal.getProductionPerHour(),
