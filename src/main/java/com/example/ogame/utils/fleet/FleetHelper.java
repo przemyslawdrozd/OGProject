@@ -1,10 +1,10 @@
-package com.example.ogame.utils;
+package com.example.ogame.utils.fleet;
 
 import com.example.ogame.models.fleet.Ship;
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.ogame.utils.ShipName.*;
+import static com.example.ogame.utils.facilities.ShipName.*;
 
 public class FleetHelper {
 

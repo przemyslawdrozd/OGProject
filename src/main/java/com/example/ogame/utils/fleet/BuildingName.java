@@ -1,4 +1,4 @@
-package com.example.ogame.utils;
+package com.example.ogame.utils.fleet;
 
 public enum BuildingName {
 

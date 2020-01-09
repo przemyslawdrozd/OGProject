@@ -1,10 +1,11 @@
-package com.example.ogame.utils;
+package com.example.ogame.utils.fleet;
 
 import com.example.ogame.datasource.VerifyDataAccess;
 import com.example.ogame.exeptions.ApiRequestException;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.fleet.Ship;
 import com.example.ogame.services.ResourceService;
+import com.example.ogame.utils.facilities.ShipName;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,19 +14,18 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class FleetRoleImpl implements FleetRule {
+public class FleetRole {
 
     private final ResourceService resourceService;
     private final VerifyDataAccess verifyDataAccess;
-    private final Logger logger = LoggerFactory.getLogger(FleetRoleImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(FleetRole.class);
 
-    public FleetRoleImpl(ResourceService resourceService,
-                         VerifyDataAccess verifyDataAccess) {
+    public FleetRole(ResourceService resourceService,
+                     VerifyDataAccess verifyDataAccess) {
         this.resourceService = resourceService;
         this.verifyDataAccess = verifyDataAccess;
     }
 
-    @Override
     public int buildShip(Resources res, Ship ship, int amount) {
         int metalCost = ship.getMetalCost();
         int cristalCost = ship.getCristalCost();
@@ -44,7 +44,6 @@ public class FleetRoleImpl implements FleetRule {
         return amount;
     }
 
-    @Override
     public void verifyFleetApi(UUID userId, String shipName) {
         if (!verifyDataAccess.ifUserIdExists(userId)) {
             logger.warn("Wrong user id!");
@@ -56,7 +55,6 @@ public class FleetRoleImpl implements FleetRule {
         }
     }
 
-    @Override
     public void verifyFleetApi(UUID userId) {
         if (!verifyDataAccess.ifUserIdExists(userId)) {
             logger.warn("Wrong user id!");

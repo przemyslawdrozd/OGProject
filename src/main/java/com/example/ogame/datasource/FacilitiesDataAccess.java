@@ -2,8 +2,8 @@ package com.example.ogame.datasource;
 
 import com.example.ogame.models.facilities.Building;
 import com.example.ogame.models.facilities.Facilities;
-import com.example.ogame.utils.BuildingName;
-import com.example.ogame.utils.FacilitiesHelper;
+import com.example.ogame.utils.fleet.BuildingName;
+import com.example.ogame.utils.fleet.FacilitiesHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
