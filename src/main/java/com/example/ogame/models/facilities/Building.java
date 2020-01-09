@@ -1,6 +1,6 @@
 package com.example.ogame.models.facilities;
 
-import com.example.ogame.utils.BuildingName;
+import com.example.ogame.utils.fleet.BuildingName;
 import java.util.UUID;
 
 public class Building {
@@ -42,8 +42,7 @@ public class Building {
         this.neededDeuterium *= increaseCost;
 
         if (productionPerHour != 0) {
-            // TODO Change production per lvl
-            this.productionPerHour *= 1.25;
+            this.productionPerHour *= 2;
         }
     }
 

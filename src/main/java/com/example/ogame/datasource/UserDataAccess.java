@@ -82,10 +82,10 @@ public class UserDataAccess implements ApplicationUserDao {
                 sql,
                 new Object[] {user_id},
                 (resultSet, i) -> {
-                    UUID resources_id = UUID.fromString(resultSet.getString("resource_id"));
-                    UUID buildings_id = UUID.fromString(resultSet.getString("buildings_id"));
-                    UUID fleet_id = UUID.fromString((resultSet.getString("fleet_id"))); // Do migration
-                    return new UserInstance(user_id, resources_id, buildings_id, fleet_id);
+                    UUID resId = UUID.fromString(resultSet.getString("resource_id"));
+                    UUID facId = UUID.fromString(resultSet.getString("facilities_id"));
+                    UUID fleetId = UUID.fromString((resultSet.getString("fleet_id")));
+                    return new UserInstance(user_id, resId, facId, fleetId);
                 }
         );
     }
@@ -104,14 +104,14 @@ public class UserDataAccess implements ApplicationUserDao {
                 });
     }
 
-    public void insertNewInstance(UUID user_id, UUID resource_id, UUID buildings_id, UUID fleet_id) {
-        final String sql = "INSERT INTO user_instance (user_id, resource_id, buildings_id, fleet_id) " +
+    public void insertNewInstance(UUID user_id, UUID resource_id, UUID facilitiesId, UUID fleet_id) {
+        final String sql = "INSERT INTO user_instance (user_id, resource_id, facilities_id, fleet_id) " +
                 "VALUES (?, ?, ?, ?)";
         logger.info("insertNewInstance = " + sql);
         jdbcTemplate.update(sql,
                 user_id,
                 resource_id,
-                buildings_id,
+                facilitiesId,
                 fleet_id);
     }
 

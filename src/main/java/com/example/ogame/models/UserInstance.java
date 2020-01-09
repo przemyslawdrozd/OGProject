@@ -1,41 +1,39 @@
 package com.example.ogame.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.UUID;
 
 public class UserInstance {
 
-    private final UUID user_id;
-    private final UUID resource_id;
-    private final UUID buildings_id;
-    private final UUID fleet_id;
+    private final UUID userId;
+    private final UUID resourceId;
+    private final UUID facilitiesId;
+    private final UUID fleetId;
 
-    public UserInstance(@JsonProperty("user_id") UUID user_id,
-                        @JsonProperty("resource_id") UUID resource_id,
-                        @JsonProperty("buildings_id") UUID buildings_id,
-                        @JsonProperty("fleet_id") UUID fleet_id
+    public UserInstance(UUID userId,
+                        UUID resourceId,
+                        UUID facilitiesId,
+                        UUID fleetId
     ) {
 
-        this.user_id = user_id;
-        this.resource_id = resource_id;
-        this.buildings_id = buildings_id;
-        this.fleet_id = fleet_id;
+        this.userId = userId;
+        this.resourceId = resourceId;
+        this.facilitiesId = facilitiesId;
+        this.fleetId = fleetId;
     }
 
-    public UUID getUser_id() {
-        return user_id;
+    public UUID getUserId() {
+        return userId;
     }
 
-    public UUID getResource_id() {
-        return resource_id;
+    public UUID getResourceId() {
+        return resourceId;
     }
 
-    public UUID getBuildings_id() {
-        return buildings_id;
+    public UUID getFacilitiesId() {
+        return facilitiesId;
     }
 
-    public UUID getFleet_id() {
-        return fleet_id;
+    public UUID getFleetId() {
+        return fleetId;
     }
 }

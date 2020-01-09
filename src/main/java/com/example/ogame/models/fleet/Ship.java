@@ -1,6 +1,6 @@
 package com.example.ogame.models.fleet;
 
-import com.example.ogame.utils.ShipName;
+import com.example.ogame.utils.facilities.ShipName;
 import java.util.UUID;
 
 public class Ship {
