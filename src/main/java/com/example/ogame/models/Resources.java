@@ -1,13 +1,11 @@
 package com.example.ogame.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 public class Resources {
 
-    private final UUID resource_id;
+    private final UUID resourceId;
 
     @NotBlank
     private int metal;
@@ -18,12 +16,8 @@ public class Resources {
     @NotBlank
     private int deuterium;
 
-    public Resources(@JsonProperty("resource_id") UUID resource_id,
-                     @JsonProperty("metal") int metal,
-                     @JsonProperty("cristal") int cristal,
-                     @JsonProperty("deuterium") int deuterium) {
-
-        this.resource_id = resource_id;
+    public Resources(UUID resourceId, int metal, int cristal, int deuterium) {
+        this.resourceId = resourceId;
         this.metal = metal;
         this.cristal = cristal;
         this.deuterium = deuterium;
@@ -41,8 +35,8 @@ public class Resources {
         this.deuterium -= deuterium;
     }
 
-    public UUID getResource_id() {
-        return resource_id;
+    public UUID getResourceId() {
+        return resourceId;
     }
 
     public int getMetal() {

@@ -2,6 +2,7 @@ package com.example.ogame.services;
 
 import com.example.ogame.datasource.FacilitiesDataAccess;
 import com.example.ogame.datasource.FleetDataAccess;
+import com.example.ogame.datasource.ResourceDataAccess;
 import com.example.ogame.datasource.UserDataAccess;
 import com.example.ogame.models.*;
 import com.example.ogame.utils.VerifyRule;
@@ -23,17 +24,20 @@ public class UserService implements UserDetailsService {
     private final FacilitiesDataAccess facilitiesDataAccess;
     private final ApplicationUserDao applicationUserDao;
     private final FleetDataAccess fleetDataAccess;
+    private final ResourceDataAccess resourceDataAccess;
     private final VerifyRule verifyRule;
 
     @Autowired
     public UserService(UserDataAccess userDataAccess,
                        FacilitiesDataAccess facilitiesDataAccess,
                        ApplicationUserDao applicationUserDao,
-                       FleetDataAccess fleetDataAccess, VerifyRule verifyRule) {
+                       FleetDataAccess fleetDataAccess,
+                       ResourceDataAccess resourceDataAccess, VerifyRule verifyRule) {
         this.userDataAccess = userDataAccess;
         this.facilitiesDataAccess = facilitiesDataAccess;
         this.applicationUserDao = applicationUserDao;
         this.fleetDataAccess = fleetDataAccess;
+        this.resourceDataAccess = resourceDataAccess;
         this.verifyRule = verifyRule;
     }
 
@@ -53,7 +57,7 @@ public class UserService implements UserDetailsService {
         fleetDataAccess.insertFleet(fleetId);
         logger.info("New Fleet created");
 
-        userDataAccess.insertNewResourcesToNewUser(resourceId);
+        resourceDataAccess.insertResources(resourceId);
         logger.info("New resources created");
 
         facilitiesDataAccess.insertFacilities(facilitiesId);

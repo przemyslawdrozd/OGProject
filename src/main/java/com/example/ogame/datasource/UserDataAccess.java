@@ -45,20 +45,6 @@ public class UserDataAccess implements ApplicationUserDao {
                 (rs, i) -> UUID.fromString(rs.getString("user_id")));
     }
 
-    public int insertNewResourcesToNewUser(UUID resourceId) {
-        final String sql = "INSERT INTO resources (" +
-                "resource_id, metal, cristal, deuterium) " +
-                "VALUES (?, ?, ?, ?)";
-        logger.info("insertNewResourcesToNewUser - " + sql);
-        Resources res = new Resources(resourceId, 500, 500, 0);
-        return jdbcTemplate.update(
-                sql,
-                resourceId,
-                res.getMetal(),
-                res.getCristal(),
-                res.getDeuterium());
-    }
-
     public void insertUser(UUID userId, User newUser) {
         final String sql = "INSERT INTO users (user_id, username, password, email) VALUES (?, ?, ?, ?)";
         logger.info("insertUser - " + sql);

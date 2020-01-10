@@ -46,7 +46,7 @@ public class BuildingsService {
         facilitiesRule.verifyFacilitiesApi(userId, buildingName);
 
         Building building = facilitiesDataAccess.selectBuilding(userId, buildingName);
-        Resources resources =  resourceDataAccess.selectResourcesByUserId(userId);
+        Resources resources =  resourceDataAccess.selectResources(userId);
 
         if (building.getNeededMetal() < resources.getMetal() &&
                 building.getNeededCristal() < resources.getCristal() &&
@@ -62,7 +62,7 @@ public class BuildingsService {
             logger.info(building.getName() + " has been lvl up : " + building.getLevel());
 
             resourceDataAccess.updateResources(new Resources(
-                    resources.getResource_id(),
+                    resources.getResourceId(),
                     resources.getMetal(),
                     resources.getCristal(),
                     resources.getDeuterium()));

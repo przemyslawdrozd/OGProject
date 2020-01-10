@@ -11,7 +11,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/resource-api")
 public class ResourceController {
-
     private Logger logger = LoggerFactory.getLogger(ResourceController.class);
 
     private final ResourceService resourceService;
@@ -21,17 +20,17 @@ public class ResourceController {
         this.resourceService = resourceService;
     }
 
-    @GetMapping(path = "/{user_id}/resources")
-    public Resources getResourcesByUserId(@PathVariable("user_id") String user_id) {
-        logger.info("GET resources - " + user_id);
-        UUID userID = UUID.fromString(user_id);
+    @GetMapping(path = "/{id}")
+    public Resources getResourcesByUserId(@PathVariable("id") String id) {
+        logger.info("GET resources - " + id);
+        UUID userID = UUID.fromString(id);
         return resourceService.getResources(userID);
     }
 
-    @GetMapping(path = "/{user_id}/addextra")
-    public int addExtraResources(@PathVariable("user_id") String user_id) {
-        logger.info("PUT Extra resources - " + user_id);
-        UUID userId = UUID.fromString(user_id);
+    @PutMapping(path = "/{id}")
+    public int addExtraResources(@PathVariable("id") String id) {
+        logger.info("PUT Extra resources - " + id);
+        UUID userId = UUID.fromString(id);
         return resourceService.addExtraResources(userId);
     }
 }

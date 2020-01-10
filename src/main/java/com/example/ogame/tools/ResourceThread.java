@@ -77,7 +77,7 @@ public class ResourceThread implements ApplicationListener<ContextRefreshedEvent
      */
     private void singleUpdateResThread(UUID userId) {
         while (true) {
-            Resources resources = resourceDataAccess.selectResourcesByUserId(userId);
+            Resources resources = resourceDataAccess.selectResources(userId);
             Building metal = facilitiesDataAccess.selectBuilding(userId, "METAL_MINE");
             Building cristal =  facilitiesDataAccess.selectBuilding(userId, "CRISTAL_MINE");
             Building deuterium = facilitiesDataAccess.selectBuilding(userId, "DEUTERIUM_MINE");
