@@ -1,4 +1,4 @@
-package com.example.ogame.models.researches;
+package com.example.ogame.models.research;
 
 public class TechName {
 

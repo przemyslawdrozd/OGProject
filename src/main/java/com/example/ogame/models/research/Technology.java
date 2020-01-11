@@ -1,7 +1,6 @@
-package com.example.ogame.models.researches;
+package com.example.ogame.models.research;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -17,10 +16,11 @@ public class Technology {
     private int neededCristal;
     private int neededDeuterium;
     private String buildTime;
-    private boolean isAbleToBuild;
+    private int isAbleToBuild;
 
-    public Technology(String name, int lvl, int neededMetal, int neededCristal,
-                      int neededDeuterium, String buildTime, boolean isAbleToBuild) {
+    public Technology(UUID tech_id, String name, int lvl, int neededMetal, int neededCristal,
+                      int neededDeuterium, String buildTime, int isAbleToBuild) {
+        this.techId = tech_id;
         this.name = name;
         this.lvl = lvl;
         this.neededMetal = neededMetal;
@@ -30,7 +30,7 @@ public class Technology {
         this.isAbleToBuild = isAbleToBuild;
     }
 
-    public long getDuration() {
+    private long getDuration() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss",
                     Locale.getDefault());
@@ -103,12 +103,20 @@ public class Technology {
         this.buildTime = buildTime;
     }
 
-    public boolean isAbleToBuild() {
+    public int isAbleToBuild() {
         return isAbleToBuild;
     }
 
-    public void setAbleToBuild(boolean ableToBuild) {
+    public void setAbleToBuild(int ableToBuild) {
         isAbleToBuild = ableToBuild;
+    }
+
+    public int getLvl() {
+        return lvl;
+    }
+
+    public void setLvl(int lvl) {
+        this.lvl = lvl;
     }
 
     @Override
