@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class Technology {
 
-    private UUID shipId;
+    private UUID techId;
     private String name;
     private int lvl;
     private int neededMetal;
@@ -59,12 +59,12 @@ public class Technology {
         return buildTime;
     }
 
-    public UUID getShipId() {
-        return shipId;
+    public UUID getTechId() {
+        return techId;
     }
 
-    public void setShipId(UUID shipId) {
-        this.shipId = shipId;
+    public void setTechId(UUID techId) {
+        this.techId = techId;
     }
 
     public String getName() {
