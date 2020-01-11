@@ -23,14 +23,6 @@ public class ResourceDataAccess {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insertResources(UUID resId) {
-        final String sql = "INSERT INTO resources (" +
-                "resource_id, metal, cristal, deuterium) " +
-                "VALUES (?, ?, ?, ?)";
-        logger.info("insertNewResourcesToNewUser - " + sql);
-        jdbcTemplate.update(sql, insertNewResources(createResources(resId)));
-    }
-
     // TODO Change these queries
     public Resources selectResources(UUID userId) {
         final String sql = "SELECT * FROM users " +

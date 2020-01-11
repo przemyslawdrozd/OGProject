@@ -16,6 +16,7 @@ public class ResearchController {
 
     private ResearchService researchService;
 
+    // TODO Test all Apis, add Verify
     @Autowired
     public ResearchController(ResearchService researchService) {
         this.researchService = researchService;

@@ -26,25 +26,6 @@ public class FacilitiesDataAccess {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insertFacilities(UUID facilitiesId) {
-        List<Building> buildingList = FacilitiesHelper.createFacilities();
-        Facilities facilities = new Facilities(facilitiesId, buildingList);
-        buildingList.forEach(this::insertNewBuilding);
-        logger.info("Buildings inserted");
-
-        final String sql = "INSERT INTO facilities VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, FacilitiesHelper.insertFacilities(facilities.getBuildingList()));
-    }
-
-    public void insertNewBuilding(Building building) {
-        final String sql = "INSERT INTO building (" +
-                "building_id, building_name, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour) VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?)";
-        logger.info("insertNewBuilding - " + sql);
-        jdbcTemplate.update(sql, FacilitiesHelper.insertBuilding(building));
-    }
-
     public List<Building> selectFacilities(UUID userId) {
         return getBuildingIds(getFacilitiesId(userId))
                 .stream()

@@ -18,26 +18,17 @@ public class UserService implements UserDetailsService {
     private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserDataAccess userDataAccess;
-    private final FacilitiesDataAccess facilitiesDataAccess;
     private final ApplicationUserDao applicationUserDao;
-    private final FleetDataAccess fleetDataAccess;
-    private final ResourceDataAccess resourceDataAccess;
     private final CreatorDataSource creator;
     private final VerifyRule verifyRule;
 
     @Autowired
     public UserService(UserDataAccess userDataAccess,
-                       FacilitiesDataAccess facilitiesDataAccess,
                        ApplicationUserDao applicationUserDao,
-                       FleetDataAccess fleetDataAccess,
-                       ResourceDataAccess resourceDataAccess,
                        CreatorDataSource creator,
                        VerifyRule verifyRule) {
         this.userDataAccess = userDataAccess;
-        this.facilitiesDataAccess = facilitiesDataAccess;
         this.applicationUserDao = applicationUserDao;
-        this.fleetDataAccess = fleetDataAccess;
-        this.resourceDataAccess = resourceDataAccess;
         this.creator = creator;
         this.verifyRule = verifyRule;
     }
@@ -58,19 +49,19 @@ public class UserService implements UserDetailsService {
 
         creator.insertResearch(researchId);
 
-        fleetDataAccess.insertFleet(fleetId);
+        creator.insertFleet(fleetId);
         logger.info("New Fleet created");
 
-        resourceDataAccess.insertResources(resourceId);
+        creator.insertResources(resourceId);
         logger.info("New resources created");
 
-        facilitiesDataAccess.insertFacilities(facilitiesId);
+        creator.insertFacilities(facilitiesId);
         logger.info("New Buildings created");
 
-        userDataAccess.insertUser(userId, newUser);
+        creator.insertUser(userId, newUser);
         logger.info("New user created");
 
-        userDataAccess.insertNewInstance(userId, resourceId, facilitiesId, fleetId, researchId);
+        creator.insertNewInstance(userId, resourceId, facilitiesId, fleetId, researchId);
         logger.info("New Instance created");
         return true;
     }
@@ -82,12 +73,12 @@ public class UserService implements UserDetailsService {
 
     public UserInstance getUserInstanceByUserId(UUID userId) {
         verifyRule.verifyUser(userId);
-        return userDataAccess.insertUserInstanceByUserId(userId);
+        return userDataAccess.selectUserInstanceByUserId(userId);
     }
 
     public User getUserById(UUID userId) {
         verifyRule.verifyUser(userId);
-        return userDataAccess.insertUserById(userId);
+        return userDataAccess.selectUserById(userId);
     }
 
     @Override

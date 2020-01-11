@@ -22,27 +22,6 @@ public class FleetDataAccess {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insertFleet(UUID fleet_id) {
-        List<Ship> ships = FleetHelper.createShips();
-        Fleet fleet = new Fleet(fleet_id, ships);
-        ships.forEach(this::insertNewShip);
-        logger.info("Ships inserted");
-
-        final String sql = "INSERT INTO fleet (" +
-                "fleet_id, small_cargo_ship, large_cargo_ship, light_fighter, battle_ship, colony_ship)" +
-                " VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, FleetHelper.insertFleet(fleet.getShipList()));
-        logger.info("Fleet inserted");
-    }
-
-    public void insertNewShip(Ship ship) {
-        final String sql = "INSERT INTO ship (" +
-                "ship_id, ship_name, attack, defense, speed, capacity, fuel, metal_cost, cristal_cost, deuterium_cost, amount_of_ship)" +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        logger.info("insertNewShip - " + sql);
-        jdbcTemplate.update(sql, FleetHelper.insertShip(ship));
-    }
-
     public List<Ship> selectFleet(UUID userId) {
         return getShipIds(getFleetId(userId))
                 .stream()

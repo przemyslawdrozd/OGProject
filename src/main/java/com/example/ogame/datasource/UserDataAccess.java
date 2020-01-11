@@ -45,18 +45,7 @@ public class UserDataAccess implements ApplicationUserDao {
                 (rs, i) -> UUID.fromString(rs.getString("user_id")));
     }
 
-    public void insertUser(UUID userId, User newUser) {
-        final String sql = "INSERT INTO users (user_id, username, password, email) VALUES (?, ?, ?, ?)";
-        logger.info("insertUser - " + sql);
-        jdbcTemplate.update(
-                sql,
-                userId,
-                newUser.getUsername(),
-                newUser.getPassword(),
-                newUser.getEmail());
-    }
-
-    public UserInstance insertUserInstanceByUserId(UUID userId) {
+    public UserInstance selectUserInstanceByUserId(UUID userId) {
         final String sql = "SELECT * FROM users " +
                 "JOIN user_instance USING (user_id) " +
                 "WHERE users.user_id = ?";
@@ -86,14 +75,7 @@ public class UserDataAccess implements ApplicationUserDao {
                 });
     }
 
-    public void insertNewInstance(UUID userId, UUID resourceId, UUID facilitiesId, UUID fleetId, UUID researchId) {
-        final String sql = "INSERT INTO user_instance (user_id, resource_id, facilities_id, fleet_id, research_id) " +
-                "VALUES (?, ?, ?, ?, ?)";
-        logger.info("insertNewInstance = " + sql);
-        jdbcTemplate.update(sql, userId, resourceId, facilitiesId, fleetId, researchId);
-    }
-
-    public User insertUserById(UUID user_id) {
+    public User selectUserById(UUID user_id) {
         final String sql = "SELECT * FROM users " +
                 "WHERE user_id = ?";
         logger.info("GET user: " + sql);
