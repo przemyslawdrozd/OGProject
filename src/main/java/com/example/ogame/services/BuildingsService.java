@@ -41,7 +41,6 @@ public class BuildingsService {
         return facilitiesDataAccess.selectBuilding(userId, buildingName);
     }
 
-    // TODO Change boolean and Throw Exception if not enough resources
     public boolean lvlUpBuilding(UUID userId, String buildingName) {
         facilitiesRule.verifyFacilitiesApi(userId, buildingName);
 
