@@ -86,11 +86,11 @@ public class UserDataAccess implements ApplicationUserDao {
                 });
     }
 
-    public void insertNewInstance(UUID userId, UUID resourceId, UUID facilitiesId, UUID fleetId) {
-        final String sql = "INSERT INTO user_instance (user_id, resource_id, facilities_id, fleet_id) " +
-                "VALUES (?, ?, ?, ?)";
+    public void insertNewInstance(UUID userId, UUID resourceId, UUID facilitiesId, UUID fleetId, UUID researchId) {
+        final String sql = "INSERT INTO user_instance (user_id, resource_id, facilities_id, fleet_id, research_id) " +
+                "VALUES (?, ?, ?, ?, ?)";
         logger.info("insertNewInstance = " + sql);
-        jdbcTemplate.update(sql, userId, resourceId, facilitiesId, fleetId);
+        jdbcTemplate.update(sql, userId, resourceId, facilitiesId, fleetId, researchId);
     }
 
     public User insertUserById(UUID user_id) {

@@ -1,9 +1,6 @@
 package com.example.ogame.services;
 
-import com.example.ogame.datasource.FacilitiesDataAccess;
-import com.example.ogame.datasource.FleetDataAccess;
-import com.example.ogame.datasource.ResourceDataAccess;
-import com.example.ogame.datasource.UserDataAccess;
+import com.example.ogame.datasource.*;
 import com.example.ogame.models.*;
 import com.example.ogame.utils.VerifyRule;
 import org.slf4j.Logger;
@@ -25,6 +22,7 @@ public class UserService implements UserDetailsService {
     private final ApplicationUserDao applicationUserDao;
     private final FleetDataAccess fleetDataAccess;
     private final ResourceDataAccess resourceDataAccess;
+    private final CreatorDataSource creator;
     private final VerifyRule verifyRule;
 
     @Autowired
@@ -32,12 +30,15 @@ public class UserService implements UserDetailsService {
                        FacilitiesDataAccess facilitiesDataAccess,
                        ApplicationUserDao applicationUserDao,
                        FleetDataAccess fleetDataAccess,
-                       ResourceDataAccess resourceDataAccess, VerifyRule verifyRule) {
+                       ResourceDataAccess resourceDataAccess,
+                       CreatorDataSource creator,
+                       VerifyRule verifyRule) {
         this.userDataAccess = userDataAccess;
         this.facilitiesDataAccess = facilitiesDataAccess;
         this.applicationUserDao = applicationUserDao;
         this.fleetDataAccess = fleetDataAccess;
         this.resourceDataAccess = resourceDataAccess;
+        this.creator = creator;
         this.verifyRule = verifyRule;
     }
 
@@ -53,6 +54,9 @@ public class UserService implements UserDetailsService {
         UUID resourceId = UUID.randomUUID();
         UUID facilitiesId = UUID.randomUUID();
         UUID fleetId = UUID.randomUUID();
+        UUID researchId = UUID.randomUUID();
+
+        creator.insertResearch(researchId);
 
         fleetDataAccess.insertFleet(fleetId);
         logger.info("New Fleet created");
@@ -66,7 +70,7 @@ public class UserService implements UserDetailsService {
         userDataAccess.insertUser(userId, newUser);
         logger.info("New user created");
 
-        userDataAccess.insertNewInstance(userId, resourceId, facilitiesId, fleetId);
+        userDataAccess.insertNewInstance(userId, resourceId, facilitiesId, fleetId, researchId);
         logger.info("New Instance created");
         return true;
     }
