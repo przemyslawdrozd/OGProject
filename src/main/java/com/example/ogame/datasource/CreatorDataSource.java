@@ -1,7 +1,6 @@
 package com.example.ogame.datasource;
 
 import com.example.ogame.models.User;
-import com.example.ogame.models.UserInstance;
 import com.example.ogame.models.facilities.Building;
 import com.example.ogame.models.facilities.Facilities;
 import com.example.ogame.models.fleet.Fleet;
@@ -69,7 +68,7 @@ public class CreatorDataSource {
     }
 
     private void insertTech(Technology tech) {
-        final String sql = "INSERT INTO technology VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO technology VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         logger.info("insert tech - " + tech.toString());
         jdbcTemplate.update(sql, ResearchHelper.insertTech(tech));
     }
