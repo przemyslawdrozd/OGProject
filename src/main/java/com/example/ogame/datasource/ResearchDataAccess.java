@@ -66,6 +66,7 @@ public class ResearchDataAccess {
                 rs.getInt("cristal"),
                 rs.getInt("deuterium"),
                 rs.getString("build_time"),
+                rs.getString("next_build_time"),
                 rs.getInt("is_able"));
     }
 
@@ -86,10 +87,41 @@ public class ResearchDataAccess {
     }
 
     public void updateTech(Technology tech) {
+        String newTime = getResearchNextTime(tech.getTechId());
+        String nextBuildTime = ResearchHelper.nextBuildTime(newTime);
         final String sql = "UPDATE technology SET " +
-                "lvl = ?, metal = ?, cristal = ?, deuterium = ?, build_time = ?, is_able = ? " +
+                "lvl = ?, metal = ?, cristal = ?, deuterium = ?, build_time = ?, next_build_time = ?, is_able = ? " +
                 "WHERE tech_id = ?";
         logger.info("UPDATE tech = " + sql);
-        jdbcTemplate.update(sql, ResearchHelper.updateTech(tech));
+        jdbcTemplate.update(sql, ResearchHelper.updateTech(tech, newTime, nextBuildTime));
+    }
+
+    public void updateCountDawn(Technology tech) {
+        final String sql = "UPDATE technology SET " +
+                "build_time = ? WHERE tech_id = ?";
+        jdbcTemplate.update(sql, new Object[] { tech.getBuildTime(), tech.getTechId()});
+    }
+
+    public String getResearchNextTime(UUID techId) {
+        final String sql = "SELECT next_build_time FROM technology WHERE tech_id = ?";
+        return jdbcTemplate.queryForObject(sql, new UUID[]{techId}, String.class);
+    }
+
+    public void blockResearching(UUID techId) {
+        final String sql = "UPDATE technology SET " +
+                "is_able = ? WHERE tech_id = ?";
+        jdbcTemplate.update(sql, new Object[] { 0, techId});
+    }
+
+    public void unblockResearching(UUID techId) {
+        final String sql = "UPDATE technology SET " +
+                "is_able = ? WHERE tech_id = ?";
+        jdbcTemplate.update(sql, new Object[] { 1, techId});
+    }
+
+    public void isResearching(UUID techId){
+        final String sql = "UPDATE technology SET " +
+                "is_able = ? WHERE tech_id = ?";
+        jdbcTemplate.update(sql, new Object[] { 2, techId});
     }
 }

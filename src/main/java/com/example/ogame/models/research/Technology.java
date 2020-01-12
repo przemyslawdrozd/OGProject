@@ -16,10 +16,11 @@ public class Technology {
     private int neededCristal;
     private int neededDeuterium;
     private String buildTime;
+    private String nextBuildTime;
     private int isAbleToBuild;
 
     public Technology(UUID tech_id, String name, int lvl, int neededMetal, int neededCristal,
-                      int neededDeuterium, String buildTime, int isAbleToBuild) {
+                      int neededDeuterium, String buildTime, String nextBuildTime, int isAbleToBuild) {
         this.techId = tech_id;
         this.name = name;
         this.lvl = lvl;
@@ -28,22 +29,7 @@ public class Technology {
         this.neededDeuterium = neededDeuterium;
         this.buildTime = buildTime;
         this.isAbleToBuild = isAbleToBuild;
-    }
-
-    private long getDuration() {
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss",
-                    Locale.getDefault());
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return dateFormat.parse(buildTime).getTime();
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
-            return 0;
-        }
-    }
-
-    private void setNewTime(long newTime) {
-        this.buildTime = DurationFormatUtils.formatDurationHMS(newTime);
+        this.nextBuildTime = nextBuildTime;
     }
 
     public void lvlUpTech() {
@@ -51,8 +37,38 @@ public class Technology {
         this.neededMetal *= 2;
         this.neededCristal *= 2;
         this.neededDeuterium *= 2;
-        long newTime = getDuration() * 2;
-        setNewTime(newTime);
+    }
+
+    public String getNextBuildTime() {
+        return nextBuildTime.replace(".000", "");
+    }
+
+    public boolean countDown() {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss", Locale.getDefault());
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            long duration = dateFormat.parse(buildTime).getTime() - 1000;
+            if (duration > 1001) {
+                this.buildTime = DurationFormatUtils.formatDurationHMS(duration).replace(".000", "");
+                return true;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
+    public void setNextBuildTime(String nextBuildTime) {
+        this.nextBuildTime = nextBuildTime;
+    }
+
+    public void setIsAbleToBuild(int isAbleToBuild) {
+        this.isAbleToBuild = isAbleToBuild;
+    }
+
+    public int getIsAbleToBuild() {
+        return isAbleToBuild;
     }
 
     public String getBuildTime() {

@@ -43,7 +43,10 @@ public class ResearchService {
 
         if (tech.getNeededMetal() < res.getMetal() &&
             tech.getNeededCristal() < res.getCristal() &&
-            tech.getNeededDeuterium() < res.getDeuterium()) {
+            tech.getNeededDeuterium() < res.getDeuterium() &&
+            tech.isAbleToBuild() == 1) {
+
+            blockRestOfTech(userId);
 
             res.utilizeForBuild(
                     tech.getNeededMetal(),
@@ -51,13 +54,17 @@ public class ResearchService {
                     tech.getNeededDeuterium()
             );
 
-            tech.lvlUpTech();
-            logger.info(tech.getName() + " has been level up: " + tech.getLvl());
-
             resourceDataAccess.updateResources(res);
-            researchDataAccess.updateTech(tech);
+            researchDataAccess.isResearching(tech.getTechId());
+            logger.info("Tech able to researching: 2");
             return true;
         }
-        throw new ApiRequestException("Not enough Resources");
+        throw new ApiRequestException("Not enough Resources or is researching");
+    }
+
+    private void blockRestOfTech(UUID userId) {
+        List<Technology> technologies = researchDataAccess.selectResearch(userId);
+        technologies.forEach(tech -> researchDataAccess.blockResearching(tech.getTechId()));
+        logger.info("Tech are blocked: 0");
     }
 }
