@@ -2,6 +2,7 @@ package com.example.ogame.services;
 
 import com.example.ogame.datasource.ResearchDataAccess;
 import com.example.ogame.datasource.ResourceDataAccess;
+import com.example.ogame.exeptions.ApiRequestException;
 import com.example.ogame.models.Resources;
 import com.example.ogame.models.research.Technology;
 import org.slf4j.Logger;
@@ -15,8 +16,10 @@ import java.util.UUID;
 @Service
 public class ResearchService {
     private Logger logger = LoggerFactory.getLogger(ResourceService.class);
+
     private ResearchDataAccess researchDataAccess;
     private ResourceDataAccess resourceDataAccess;
+
     @Autowired
     public ResearchService(ResearchDataAccess researchDataAccess,
                            ResourceDataAccess resourceDataAccess) {
@@ -55,6 +58,6 @@ public class ResearchService {
             researchDataAccess.updateTech(tech);
             return true;
         }
-        return false;
+        throw new ApiRequestException("Not enough Resources");
     }
 }

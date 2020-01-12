@@ -4,7 +4,7 @@ import com.example.ogame.models.research.Technology;
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.ogame.models.research.TechName.*;
+import static com.example.ogame.utils.research.TechName.*;
 
 public class ResearchHelper {
 
