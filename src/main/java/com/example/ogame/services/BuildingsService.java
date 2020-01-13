@@ -48,8 +48,11 @@ public class BuildingsService {
         Resources resources =  resourceDataAccess.selectResources(userId);
 
         if (building.getNeededMetal() < resources.getMetal() &&
-                building.getNeededCristal() < resources.getCristal() &&
-                building.getNeededDeuterium() < resources.getDeuterium()) {
+            building.getNeededCristal() < resources.getCristal() &&
+            building.getNeededDeuterium() < resources.getDeuterium() &&
+            building.getIsAbleToBuild() == 1) {
+
+            blockRestOfFacilities(userId);
 
             resources.utilizeForBuild(
                     building.getNeededMetal(),
@@ -57,19 +60,18 @@ public class BuildingsService {
                     building.getNeededDeuterium()
             );
 
-            building.lvlUpBuilding();
-            logger.info(building.getName() + " has been lvl up : " + building.getLevel());
-
-            resourceDataAccess.updateResources(new Resources(
-                    resources.getResourceId(),
-                    resources.getMetal(),
-                    resources.getCristal(),
-                    resources.getDeuterium()));
-
-            facilitiesDataAccess.updateBuilding(building);
+            resourceDataAccess.updateResources(resources);
+            facilitiesDataAccess.isBuilding(building.getBuildingId());
+            logger.info(building.getName() +  " able to building: 2");
             return true;
         }
-        throw new ApiRequestException("Not enough resources!");
+        throw new ApiRequestException("Not enough resources or is building!");
+    }
+
+    private void blockRestOfFacilities(UUID userId) {
+        List<Building> technologies = facilitiesDataAccess.selectFacilities(userId);
+        technologies.forEach(b -> facilitiesDataAccess.blockBuilding(b.getBuildingId()));
+        logger.info("facilities are blocked: 0");
     }
 
 }
