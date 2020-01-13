@@ -31,7 +31,7 @@ public class ResearchScheduler {
                     technologies.forEach(tech -> {
                         if (tech.getIsAbleToBuild() == 2) {
                             if (tech.countDown()) {
-                                researchDataAccess.updateCountDawn(tech);
+                                researchDataAccess.updateCountDown(tech);
                             } else {
                                 tech.lvlUpTech();
                                 researchDataAccess.updateTech(tech);

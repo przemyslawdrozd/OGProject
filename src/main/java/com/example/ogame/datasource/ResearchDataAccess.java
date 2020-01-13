@@ -96,7 +96,7 @@ public class ResearchDataAccess {
         jdbcTemplate.update(sql, ResearchHelper.updateTech(tech, newTime, nextBuildTime));
     }
 
-    public void updateCountDawn(Technology tech) {
+    public void updateCountDown(Technology tech) {
         final String sql = "UPDATE technology SET " +
                 "build_time = ? WHERE tech_id = ?";
         jdbcTemplate.update(sql, new Object[] { tech.getBuildTime(), tech.getTechId()});

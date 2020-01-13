@@ -50,14 +50,14 @@ public class ResearchHelper {
         };
     }
 
-    public static Object[] updateTech(Technology tech, String newTime, String nexTime) {
+    public static Object[] updateTech(Technology tech, String newTime, String nextTime) {
         return new Object[] {
                 tech.getLvl(),
                 tech.getNeededMetal(),
                 tech.getNeededCristal(),
                 tech.getNeededDeuterium(),
                 newTime.replace(".000", ""),
-                nexTime.replace(".000", ""),
+                nextTime.replace(".000", ""),
                 tech.isAbleToBuild(),
                 tech.getTechId()
         };
