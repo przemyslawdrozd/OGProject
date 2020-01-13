@@ -1,7 +1,6 @@
 package com.example.ogame.datasource;
 
 import com.example.ogame.models.facilities.Building;
-import com.example.ogame.models.facilities.Facilities;
 import com.example.ogame.utils.facilities.BuildingName;
 import com.example.ogame.utils.facilities.FacilitiesHelper;
 import org.slf4j.Logger;
@@ -68,8 +67,10 @@ public class FacilitiesDataAccess {
                 rs.getInt("needed_metal"),
                 rs.getInt("needed_cristal"),
                 rs.getInt("needed_deuterium"),
-                rs.getInt("build_time"),
-                rs.getInt("production_per_hour"));
+                rs.getInt("production_per_hour"),
+                rs.getString("build_time"),
+                rs.getString("next_build_time"),
+                rs.getInt("is_able"));
     }
 
     public Building selectBuilding(UUID userId, String buildingName) {
@@ -85,10 +86,42 @@ public class FacilitiesDataAccess {
     }
 
     public int updateBuilding(Building building) {
+        String newTime = getResearchNextTime(building.getBuildingId());
+        String nextBuildTime = FacilitiesHelper.nextBuildTime(newTime);
         final String sql = "UPDATE building " +
-                "SET lvl = ?, needed_metal = ?, needed_cristal = ?, needed_deuterium = ?, production_per_hour = ?" +
+                "SET lvl = ?, needed_metal = ?, needed_cristal = ?, needed_deuterium = ?, production_per_hour = ?, " +
+                "build_time = ?, next_build_time = ?, is_able = ?" +
                 "WHERE building_id = ?";
         logger.info("UPDATE buildingLvlUp SQL = " + sql);
-        return jdbcTemplate.update(sql, FacilitiesHelper.updateBuilding(building));
+        return jdbcTemplate.update(sql, FacilitiesHelper.updateBuilding(building, newTime, nextBuildTime));
+    }
+
+    public String getResearchNextTime(UUID buildingId) {
+        final String sql = "SELECT next_build_time FROM building WHERE building_id = ?";
+        return jdbcTemplate.queryForObject(sql, new UUID[]{buildingId}, String.class);
+    }
+
+    public void updateCountDown(Building b) {
+        final String sql = "UPDATE building SET " +
+                "build_time = ? WHERE building_id = ?";
+        jdbcTemplate.update(sql, new Object[] { b.getBuildTime(), b.getBuildingId()});
+    }
+
+    public void blockBuilding(UUID buildingId) {
+        final String sql = "UPDATE building SET " +
+                "is_able = ? WHERE building_id = ?";
+        jdbcTemplate.update(sql, new Object[] { 0, buildingId});
+    }
+
+    public void unblockBuilding(UUID buildingId) {
+        final String sql = "UPDATE building SET " +
+                "is_able = ? WHERE building_id = ?";
+        jdbcTemplate.update(sql, new Object[] { 1, buildingId});
+    }
+
+    public void isBuilding(UUID buildingId){
+        final String sql = "UPDATE building SET " +
+                "is_able = ? WHERE building_id = ?";
+        jdbcTemplate.update(sql, new Object[] { 2, buildingId});
     }
 }

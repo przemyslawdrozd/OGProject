@@ -22,7 +22,7 @@ public class BuildingController {
         this.buildingsService = buildingsService;
     }
 
-    @GetMapping("/{id}/")
+    @GetMapping("/{id}")
     public List<Building> getListOfBuildings(@PathVariable("id") String id) {
         logger.info("GET listOfBuildings - " + id);
         UUID userId = UUID.fromString(id);

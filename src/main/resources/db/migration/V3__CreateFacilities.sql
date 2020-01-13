@@ -19,8 +19,10 @@ CREATE TABLE IF NOT EXISTS building (
     needed_metal INTEGER NOT NULL,
     needed_cristal INTEGER NOT NULL,
     needed_deuterium INTEGER NOT NULL,
-    build_time INTEGER NOT NULL ,
-    production_per_hour INTEGER NOT NULL
+    production_per_hour INTEGER NOT NULL,
+    build_time VARCHAR (20) NOT NULL,
+    next_build_time VARCHAR (20) NOT NULL,
+    is_able INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS facilities (

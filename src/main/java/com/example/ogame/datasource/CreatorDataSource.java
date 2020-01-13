@@ -106,9 +106,8 @@ public class CreatorDataSource {
     }
 
     public void insertNewBuilding(Building building) {
-        final String sql = "INSERT INTO building (" +
-                "building_id, building_name, lvl, needed_metal, needed_cristal, needed_deuterium, build_time, production_per_hour) VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO building VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         logger.info("insertNewBuilding - " + sql);
         jdbcTemplate.update(sql, FacilitiesHelper.insertBuilding(building));
     }
