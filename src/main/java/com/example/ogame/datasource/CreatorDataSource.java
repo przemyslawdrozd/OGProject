@@ -1,5 +1,7 @@
 package com.example.ogame.datasource;
 
+import com.example.ogame.exeptions.ApiRequestException;
+import com.example.ogame.models.Galaxy;
 import com.example.ogame.models.User;
 import com.example.ogame.models.facilities.Building;
 import com.example.ogame.models.facilities.Facilities;
@@ -9,18 +11,17 @@ import com.example.ogame.models.research.Research;
 import com.example.ogame.models.research.Technology;
 import com.example.ogame.utils.facilities.FacilitiesHelper;
 import com.example.ogame.utils.fleet.FleetHelper;
+import com.example.ogame.utils.galaxy.GalaxyHelper;
 import com.example.ogame.utils.research.ResearchHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.ogame.utils.resources.ResourcesHelper.createResources;
-import static com.example.ogame.utils.resources.ResourcesHelper.insertNewResources;
+import static com.example.ogame.utils.resources.ResourcesHelper.*;
 
 @Repository
 public class CreatorDataSource {
@@ -50,11 +51,11 @@ public class CreatorDataSource {
                 newUser.getEmail());
     }
 
-    public void insertNewInstance(UUID userId, UUID resourceId, UUID facilitiesId, UUID fleetId, UUID researchId) {
-        final String sql = "INSERT INTO user_instance (user_id, resource_id, facilities_id, fleet_id, research_id) " +
-                "VALUES (?, ?, ?, ?, ?)";
+    public void insertNewInstance(UUID userId, UUID resourceId, UUID facilitiesId, UUID fleetId, UUID researchId, UUID planetId) {
+        final String sql = "INSERT INTO user_instance (user_id, resource_id, facilities_id, fleet_id, research_id, planet_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         logger.info("insertNewInstance = " + sql);
-        jdbcTemplate.update(sql, userId, resourceId, facilitiesId, fleetId, researchId);
+        jdbcTemplate.update(sql, userId, resourceId, facilitiesId, fleetId, researchId, planetId);
     }
 
     public void insertResearch(UUID researchId) {
@@ -110,5 +111,33 @@ public class CreatorDataSource {
                 "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         logger.info("insertNewBuilding - " + sql);
         jdbcTemplate.update(sql, FacilitiesHelper.insertBuilding(building));
+    }
+
+    public void insertPlanet(UUID planetId) {
+        Galaxy galaxy = createPlanetPosition(planetId);
+        final String sql = "INSERT INTO galaxy VALUES " +
+                "(?, ?, ?, ?)";
+        logger.info("insert planet");
+        jdbcTemplate.update(sql, GalaxyHelper.insertPlanet(planetId, galaxy));
+    }
+
+    public boolean ifCoordinatesExists(int galaxyPosition, int planetarySystem, int planetPosition) {
+        final String sql = "SELECT EXISTS ( SELECT 1 FROM galaxy WHERE " +
+                "galaxy_position = ? AND planetary_system = ? AND planet_position = ? )";
+        return jdbcTemplate.queryForObject(sql, new Object[] {galaxyPosition, planetarySystem, planetPosition},
+                (rs, i) -> rs.getBoolean(1));
+    }
+
+    private Galaxy createPlanetPosition(UUID planetId) {
+        for (int planetSystem = 1; planetSystem < 4; planetSystem++) {
+            for (int planetPosition = 1; planetPosition < 11; planetPosition++) {
+                if (!ifCoordinatesExists(1, planetSystem, planetPosition)){
+                    logger.info("Create new planet position");
+                    return new Galaxy(planetId, 1, planetSystem, planetPosition);
+                }
+            }
+        }
+        logger.error("Creating planet position failed!");
+        throw new ApiRequestException("There is no place to create planet!");
     }
 }

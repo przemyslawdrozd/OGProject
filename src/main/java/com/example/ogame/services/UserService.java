@@ -46,6 +46,9 @@ public class UserService implements UserDetailsService {
         UUID facilitiesId = UUID.randomUUID();
         UUID fleetId = UUID.randomUUID();
         UUID researchId = UUID.randomUUID();
+        UUID planetId = UUID.randomUUID();
+
+        creator.insertPlanet(planetId);
 
         creator.insertResearch(researchId);
 
@@ -61,7 +64,7 @@ public class UserService implements UserDetailsService {
         creator.insertUser(userId, newUser);
         logger.info("New user created");
 
-        creator.insertNewInstance(userId, resourceId, facilitiesId, fleetId, researchId);
+        creator.insertNewInstance(userId, resourceId, facilitiesId, fleetId, researchId, planetId);
         logger.info("New Instance created");
         return true;
     }
