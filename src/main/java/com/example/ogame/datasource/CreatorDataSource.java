@@ -1,7 +1,7 @@
 package com.example.ogame.datasource;
 
 import com.example.ogame.exeptions.ApiRequestException;
-import com.example.ogame.models.Galaxy;
+import com.example.ogame.models.Planet;
 import com.example.ogame.models.User;
 import com.example.ogame.models.facilities.Building;
 import com.example.ogame.models.facilities.Facilities;
@@ -114,11 +114,11 @@ public class CreatorDataSource {
     }
 
     public void insertPlanet(UUID planetId) {
-        Galaxy galaxy = createPlanetPosition(planetId);
+        Planet planet = createPlanetPosition(planetId);
         final String sql = "INSERT INTO galaxy VALUES " +
                 "(?, ?, ?, ?)";
         logger.info("insert planet");
-        jdbcTemplate.update(sql, GalaxyHelper.insertPlanet(planetId, galaxy));
+        jdbcTemplate.update(sql, GalaxyHelper.insertPlanet(planetId, planet));
     }
 
     public boolean ifCoordinatesExists(int galaxyPosition, int planetarySystem, int planetPosition) {
@@ -128,12 +128,12 @@ public class CreatorDataSource {
                 (rs, i) -> rs.getBoolean(1));
     }
 
-    private Galaxy createPlanetPosition(UUID planetId) {
+    private Planet createPlanetPosition(UUID planetId) {
         for (int planetSystem = 1; planetSystem < 4; planetSystem++) {
             for (int planetPosition = 1; planetPosition < 11; planetPosition++) {
                 if (!ifCoordinatesExists(1, planetSystem, planetPosition)){
                     logger.info("Create new planet position");
-                    return new Galaxy(planetId, 1, planetSystem, planetPosition);
+                    return new Planet(planetId, 1, planetSystem, planetPosition);
                 }
             }
         }

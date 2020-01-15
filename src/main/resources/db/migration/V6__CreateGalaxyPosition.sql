@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS galaxy (
+CREATE TABLE IF NOT EXISTS planet (
 
    planet_id UUID NOT NULL PRIMARY KEY,
    galaxy_position INTEGER NOT NULL,
@@ -8,5 +8,5 @@ CREATE TABLE IF NOT EXISTS galaxy (
 
 ALTER TABLE user_instance
 ADD COLUMN planet_id UUID
-REFERENCES galaxy(planet_id),
+REFERENCES planet(planet_id),
 ADD UNIQUE (planet_id);

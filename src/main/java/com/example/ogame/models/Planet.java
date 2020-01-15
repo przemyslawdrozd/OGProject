@@ -2,14 +2,14 @@ package com.example.ogame.models;
 
 import java.util.UUID;
 
-public class Galaxy {
+public class Planet {
 
     private UUID planetId;
     private int galaxyPosition;
     private int planetarySystem;
     private int planetPosition;
 
-    public Galaxy(UUID planetId, int galaxyPosition, int planetarySystem, int planetPosition) {
+    public Planet(UUID planetId, int galaxyPosition, int planetarySystem, int planetPosition) {
         this.planetId = planetId;
         this.galaxyPosition = galaxyPosition;
         this.planetarySystem = planetarySystem;
