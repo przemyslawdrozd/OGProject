@@ -25,14 +25,18 @@ public class PlanetController {
     }
 
     @GetMapping
-    public List<Planet> getPlanets(){
-        return planetService.getPlanets();
+    public List<Planet> getGalaxy(){
+        return planetService.getGalaxy();
     }
+
 
     @GetMapping("/{id}")
     public Planet getPlanet(@PathVariable("id") String id) {
-        UUID planetId = UUID.fromString(id);
-        return planetService.getPlanet(id);
+        UUID userId = UUID.fromString(id);
+        return planetService.getUserPlanet(userId);
     }
+
+
+
 
 }

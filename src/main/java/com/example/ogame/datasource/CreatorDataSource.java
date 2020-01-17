@@ -115,14 +115,14 @@ public class CreatorDataSource {
 
     public void insertPlanet(UUID planetId) {
         Planet planet = createPlanetPosition(planetId);
-        final String sql = "INSERT INTO galaxy VALUES " +
+        final String sql = "INSERT INTO planet VALUES " +
                 "(?, ?, ?, ?)";
         logger.info("insert planet");
         jdbcTemplate.update(sql, GalaxyHelper.insertPlanet(planetId, planet));
     }
 
     public boolean ifCoordinatesExists(int galaxyPosition, int planetarySystem, int planetPosition) {
-        final String sql = "SELECT EXISTS ( SELECT 1 FROM galaxy WHERE " +
+        final String sql = "SELECT EXISTS ( SELECT 1 FROM planet WHERE " +
                 "galaxy_position = ? AND planetary_system = ? AND planet_position = ? )";
         return jdbcTemplate.queryForObject(sql, new Object[] {galaxyPosition, planetarySystem, planetPosition},
                 (rs, i) -> rs.getBoolean(1));
