@@ -25,8 +25,7 @@ public class PlanetService {
         return planetDataAccess.selectGalaxy();
     }
 
-
     public Planet getUserPlanet(UUID userId) {
-        return null;
+        return planetDataAccess.selectPlanet(userId);
     }
 }

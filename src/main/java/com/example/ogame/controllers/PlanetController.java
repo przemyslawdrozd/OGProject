@@ -29,14 +29,9 @@ public class PlanetController {
         return planetService.getGalaxy();
     }
 
-
     @GetMapping("/{id}")
     public Planet getPlanet(@PathVariable("id") String id) {
         UUID userId = UUID.fromString(id);
         return planetService.getUserPlanet(userId);
     }
-
-
-
-
 }
